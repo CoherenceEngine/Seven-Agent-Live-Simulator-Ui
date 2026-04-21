@@ -1,0 +1,600 @@
+import React, { useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { Activity, ArrowRight, Brain, Database, GitBranch, ShieldCheck, Wrench, Search, Play, RotateCcw } from "lucide-react";
+
+const AGENTS = [
+  { id: 1, key: "router", name: "Router", short: "R", icon: GitBranch, color: "bg-violet-500", defaultD: 0.96, role: "Task routing" },
+  { id: 2, key: "planner", name: "Planner", short: "P", icon: Brain, color: "bg-blue-500", defaultD: 0.93, role: "Plan decomposition" },
+  { id: 3, key: "researcher", name: "Researcher", short: "Rs", icon: Search, color: "bg-green-500", defaultD: 0.88, role: "Evidence gathering" },
+  { id: 4, key: "memory", name: "Memory", short: "M", icon: Database, color: "bg-amber-500", defaultD: 0.97, role: "Context retrieval" },
+  { id: 5, key: "toolUser", name: "ToolUser", short: "T", icon: Wrench, color: "bg-red-500", defaultD: 0.91, role: "Tool execution" },
+  { id: 6, key: "executor", name: "Executor", short: "E", icon: Play, color: "bg-cyan-500", defaultD: 0.92, role: "Response assembly" },
+  { id: 7, key: "critic", name: "Critic", short: "C", icon: ShieldCheck, color: "bg-fuchsia-500", defaultD: 0.95, role: "Verification" },
+] as const;
+
+type AgentKey = (typeof AGENTS)[number]["key"];
+
+type Edge = {
+  from: number;
+  to: number;
+  rho: number;
+  label: string;
+};
+
+const BASE_EDGES: Edge[] = [
+  { from: 1, to: 2, rho: 0.98, label: "1→2" },
+  { from: 2, to: 3, rho: 0.9, label: "2→3" },
+  { from: 2, to: 4, rho: 0.96, label: "2→4" },
+  { from: 2, to: 5, rho: 0.92, label: "2→5" },
+  { from: 3, to: 6, rho: 0.89, label: "3→6" },
+  { from: 4, to: 6, rho: 0.97, label: "4→6" },
+  { from: 5, to: 6, rho: 0.94, label: "5→6" },
+  { from: 6, to: 7, rho: 0.98, label: "6→7" },
+];
+
+const LOOP_EDGE: Edge = { from: 7, to: 6, rho: 0.99, label: "7→6" };
+
+const INITIAL_CAPABILITY = {
+  I: 1,
+  S: 1,
+  A: 1,
+  N: 1,
+  R: 1,
+  C: 1,
+  T: 1,
+};
+
+function fmt(x: number, digits = 4) {
+  return Number.isFinite(x) ? x.toFixed(digits) : "—";
+}
+
+function clamp01(x: number) {
+  return Math.max(0, Math.min(1, x));
+}
+
+function mul(arr: number[]) {
+  return arr.reduce((a, b) => a * b, 1);
+}
+
+function buildAdjacency(edges: Edge[], n = 7) {
+  const matrix = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
+  edges.forEach((e) => {
+    matrix[e.from - 1][e.to - 1] = 1;
+  });
+  return matrix;
+}
+
+function buildWeightedAdjacency(edges: Edge[], D: number[], a = 1, n = 7) {
+  const matrix = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
+  edges.forEach((e) => {
+    matrix[e.from - 1][e.to - 1] = a * e.rho * D[e.from - 1] * D[e.to - 1];
+  });
+  return matrix;
+}
+
+function spectralRadiusApprox(matrix: number[][], iters = 30) {
+  const n = matrix.length;
+  let v = Array.from({ length: n }, () => 1 / Math.sqrt(n));
+  for (let k = 0; k < iters; k++) {
+    const next = Array.from({ length: n }, (_, i) => matrix[i].reduce((sum, val, j) => sum + val * v[j], 0));
+    const norm = Math.sqrt(next.reduce((s, x) => s + x * x, 0)) || 1;
+    v = next.map((x) => x / norm);
+  }
+  const Av = Array.from({ length: n }, (_, i) => matrix[i].reduce((sum, val, j) => sum + val * v[j], 0));
+  const num = Av.reduce((s, x, i) => s + x * v[i], 0);
+  const den = v.reduce((s, x) => s + x * x, 0) || 1;
+  return Math.abs(num / den);
+}
+
+export default function SevenAgentLiveSimulatorUI() {
+  const [D, setD] = useState<Record<AgentKey, number>>({
+    router: 0.96,
+    planner: 0.93,
+    researcher: 0.88,
+    memory: 0.97,
+    toolUser: 0.91,
+    executor: 0.92,
+    critic: 0.95,
+  });
+  const [lambda, setLambda] = useState(0.35);
+  const [tau, setTau] = useState(0.1);
+  const [mu, setMu] = useState(0.15);
+  const [kPerf, setKPerf] = useState(3);
+  const [k6, setK6] = useState(0.9);
+  const [k7, setK7] = useState(0.95);
+  const [sigma, setSigma] = useState(0.06);
+  const [steps, setSteps] = useState(120);
+  const [loopOn, setLoopOn] = useState(true);
+
+  const dVec = useMemo(() => AGENTS.map((a) => D[a.key]), [D]);
+  const baseEdges = BASE_EDGES;
+  const activeEdges = useMemo(() => (loopOn ? [...BASE_EDGES, LOOP_EDGE] : [...BASE_EDGES]), [loopOn]);
+
+  const PAgents = useMemo(() => {
+    return AGENTS.map((a) => {
+      const d = D[a.key];
+      const base = mul([INITIAL_CAPABILITY.I, INITIAL_CAPABILITY.S, INITIAL_CAPABILITY.A, INITIAL_CAPABILITY.N, INITIAL_CAPABILITY.R, INITIAL_CAPABILITY.C]);
+      const score = INITIAL_CAPABILITY.T * base * Math.exp(-kPerf * (1 - d));
+      return { name: a.name, score, d };
+    });
+  }, [D, kPerf]);
+
+  const baseWeighted = useMemo(() => buildWeightedAdjacency(baseEdges, dVec), [dVec]);
+  const loopWeighted = useMemo(() => buildWeightedAdjacency([...baseEdges, LOOP_EDGE], dVec), [dVec]);
+
+  const baseGraphTerm = useMemo(() => {
+    return baseEdges.reduce((s, e) => s + e.rho * D[AGENTS[e.from - 1].key] * D[AGENTS[e.to - 1].key], 0);
+  }, [D]);
+
+  const loopGraphTerm = useMemo(() => {
+    return [...baseEdges, LOOP_EDGE].reduce((s, e) => s + e.rho * D[AGENTS[e.from - 1].key] * D[AGENTS[e.to - 1].key], 0);
+  }, [D]);
+
+  const agentMeanTerm = useMemo(() => PAgents.reduce((s, a) => s + a.score, 0) / PAgents.length, [PAgents]);
+
+  const scoreDag = agentMeanTerm + lambda * (baseGraphTerm - tau * baseEdges.length - 0 * mu);
+  const scoreLoop = agentMeanTerm + lambda * (loopGraphTerm - tau * (baseEdges.length + 1) - 1 * mu);
+
+  const W76 = LOOP_EDGE.rho * D.critic * D.executor;
+  const structuralCondition = W76 > tau + mu;
+  const dynamicCondition = lambda * lambda * 0.98 * 0.99 < k6 * k7;
+
+  const A_rho_base = useMemo(() => {
+    const m = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => 0));
+    baseEdges.forEach((e) => {
+      m[e.from - 1][e.to - 1] = e.rho;
+    });
+    return m;
+  }, []);
+
+  const A_rho_loop = useMemo(() => {
+    const m = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => 0));
+    [...baseEdges, LOOP_EDGE].forEach((e) => {
+      m[e.from - 1][e.to - 1] = e.rho;
+    });
+    return m;
+  }, []);
+
+  const rhoBase = spectralRadiusApprox(A_rho_base);
+  const rhoLoop = spectralRadiusApprox(A_rho_loop);
+  const minKi = Math.min(0.85, 0.8, 0.75, 0.9, 0.8, k6, k7);
+  const stableBase = lambda * rhoBase < minKi;
+  const stableLoop = lambda * rhoLoop < minKi;
+
+  const monteCarloData = useMemo(() => {
+    const N = 350;
+    const dt = 0.06;
+    const bar = dVec.slice();
+    const KDiag = [0.85, 0.8, 0.75, 0.9, 0.8, k6, k7];
+
+    function simulate(edges: Edge[], hasLoop: boolean) {
+      let particles = Array.from({ length: N }, () => dVec.map((x) => x));
+      const series: { step: number; score: number; executor: number; critic: number }[] = [];
+
+      for (let t = 0; t <= steps; t++) {
+        const scoreRows = particles.map((p) => {
+          const agentTerm = p.map((d) => Math.exp(-kPerf * (1 - d))).reduce((a, b) => a + b, 0) / 7;
+          const pairTerm = edges.reduce((s, e) => s + e.rho * p[e.from - 1] * p[e.to - 1], 0);
+          return agentTerm + lambda * (pairTerm - tau * edges.length - mu * (hasLoop ? 1 : 0));
+        });
+        const meanScore = scoreRows.reduce((a, b) => a + b, 0) / N;
+        const meanExec = particles.reduce((s, p) => s + p[5], 0) / N;
+        const meanCrit = particles.reduce((s, p) => s + p[6], 0) / N;
+        series.push({ step: t, score: meanScore, executor: meanExec, critic: meanCrit });
+
+        particles = particles.map((p) => {
+          const next = p.slice();
+          const adjacency = Array.from({ length: 7 }, () => 0);
+          edges.forEach((e) => {
+            adjacency[e.to - 1] += e.rho * p[e.from - 1];
+          });
+          for (let i = 0; i < 7; i++) {
+            const drift = -KDiag[i] * (p[i] - bar[i]) + lambda * adjacency[i];
+            const u1 = Math.random() || 1e-6;
+            const u2 = Math.random() || 1e-6;
+            const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            const noise = sigma * Math.sqrt(dt) * z;
+            next[i] = clamp01(p[i] + drift * dt + noise);
+          }
+          return next;
+        });
+      }
+      return series;
+    }
+
+    const dag = simulate(baseEdges, false);
+    const loop = simulate([...baseEdges, LOOP_EDGE], true);
+    return dag.map((row, i) => ({
+      step: row.step,
+      dagScore: row.score,
+      loopScore: loop[i].score,
+      dagExecutor: row.executor,
+      loopExecutor: loop[i].executor,
+      dagCritic: row.critic,
+      loopCritic: loop[i].critic,
+    }));
+  }, [dVec, k6, k7, kPerf, lambda, mu, sigma, steps, tau]);
+
+  const edgeComparison = useMemo(() => {
+    return [...baseEdges, LOOP_EDGE].map((e) => ({
+      edge: e.label,
+      rho: e.rho,
+      weight: e.rho * D[AGENTS[e.from - 1].key] * D[AGENTS[e.to - 1].key],
+      active: e.label !== LOOP_EDGE.label || loopOn,
+    }));
+  }, [D, loopOn]);
+
+  const resetDefaults = () => {
+    setD({
+      router: 0.96,
+      planner: 0.93,
+      researcher: 0.88,
+      memory: 0.97,
+      toolUser: 0.91,
+      executor: 0.92,
+      critic: 0.95,
+    });
+    setLambda(0.35);
+    setTau(0.1);
+    setMu(0.15);
+    setKPerf(3);
+    setK6(0.9);
+    setK7(0.95);
+    setSigma(0.06);
+    setSteps(120);
+    setLoopOn(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs text-slate-300">
+              <Activity className="h-3.5 w-3.5" />
+              Seven-Agent Coherence Simulator
+            </div>
+            <h1 className="mt-3 text-3xl lg:text-5xl font-semibold tracking-tight">Live multi-agent control, loop, and noise simulator</h1>
+            <p className="mt-3 max-w-3xl text-slate-300 text-sm lg:text-base">
+              Interactively test the 7-agent DAG, optional critic loop, structural value rule, control-stability condition, and stochastic behavior under noise.
+            </p>
+          </div>
+          <Button onClick={resetDefaults} variant="outline" className="border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800 w-fit">
+            <RotateCcw className="mr-2 h-4 w-4" /> Reset defaults
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <Card className="xl:col-span-1 bg-slate-900/80 border-slate-800 rounded-3xl">
+            <CardHeader>
+              <CardTitle className="text-slate-100">Controls</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                {AGENTS.map((agent) => {
+                  const Icon = agent.icon;
+                  return (
+                    <div key={agent.key} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-7 w-7 rounded-full ${agent.color} flex items-center justify-center text-white shadow-lg`}>
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <div className="font-medium">{agent.name}</div>
+                            <div className="text-xs text-slate-400">{agent.role}</div>
+                          </div>
+                        </div>
+                        <Badge variant="secondary" className="bg-slate-800 text-slate-100">D = {fmt(D[agent.key], 2)}</Badge>
+                      </div>
+                      <Slider value={[D[agent.key]]} min={0.5} max={1} step={0.01} onValueChange={(v) => setD((prev) => ({ ...prev, [agent.key]: v[0] }))} />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 pt-2">
+                {[
+                  ["λ coupling", lambda, setLambda, 0, 1, 0.01],
+                  ["τ edge cost", tau, setTau, 0, 1, 0.01],
+                  ["μ loop penalty", mu, setMu, 0, 1, 0.01],
+                  ["k performance", kPerf, setKPerf, 0.5, 6, 0.1],
+                  ["k₆ executor gain", k6, setK6, 0.2, 1.5, 0.01],
+                  ["k₇ critic gain", k7, setK7, 0.2, 1.5, 0.01],
+                  ["σ noise", sigma, setSigma, 0, 0.2, 0.005],
+                ].map(([label, value, setter, min, max, step]) => (
+                  <div key={label as string} className="space-y-2">
+                    <div className="flex justify-between text-sm text-slate-300">
+                      <span>{label as string}</span>
+                      <span>{fmt(value as number, 3)}</span>
+                    </div>
+                    <Slider value={[value as number]} min={min as number} max={max as number} step={step as number} onValueChange={(v) => (setter as (x: number) => void)(v[0])} />
+                  </div>
+                ))}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-slate-300">
+                    <span>Monte Carlo steps</span>
+                    <span>{steps}</span>
+                  </div>
+                  <Slider value={[steps]} min={40} max={220} step={10} onValueChange={(v) => setSteps(v[0])} />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3">
+                <div>
+                  <div className="font-medium">Enable local critic loop</div>
+                  <div className="text-xs text-slate-400">Adds edge 7 → 6</div>
+                </div>
+                <Switch checked={loopOn} onCheckedChange={setLoopOn} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="xl:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <MetricCard title="Baseline DAG score" value={fmt(scoreDag, 4)} subtitle="Acyclic architecture" />
+              <MetricCard title="Loop score" value={fmt(scoreLoop, 4)} subtitle="DAG + 7→6" accent={loopOn ? "emerald" : "slate"} />
+              <MetricCard title="Loop benefit" value={fmt(scoreLoop - scoreDag, 4)} subtitle="Loop - DAG" accent={scoreLoop > scoreDag ? "emerald" : "rose"} />
+              <MetricCard title="W₇₆ threshold gap" value={fmt(W76 - (tau + mu), 4)} subtitle="W₇₆ - (τ + μ)" accent={structuralCondition ? "emerald" : "rose"} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                <CardHeader>
+                  <CardTitle>Architecture view</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ArchitectureDiagram loopOn={loopOn} />
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                <CardHeader>
+                  <CardTitle>Decision rules</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <RuleRow label="Structural condition" formula="W₇₆ > τ + μ" pass={structuralCondition} detail={`${fmt(W76, 4)} > ${fmt(tau + mu, 4)}`} />
+                  <RuleRow label="Dynamic loop condition" formula="λ² a₆₇a₇₆ρ₆₇ρ₇₆ < k₆k₇" pass={dynamicCondition} detail={`${fmt(lambda * lambda * 0.98 * 0.99, 4)} < ${fmt(k6 * k7, 4)}`} />
+                  <RuleRow label="Base spectral bound" formula="λρ(Aρ) < min kᵢ" pass={stableBase} detail={`${fmt(lambda * rhoBase, 4)} < ${fmt(minKi, 4)}`} />
+                  <RuleRow label="Loop spectral bound" formula="λρ(Aρ,loop) < min kᵢ" pass={stableLoop} detail={`${fmt(lambda * rhoLoop, 4)} < ${fmt(minKi, 4)}`} />
+                </CardContent>
+              </Card>
+            </div>
+
+            <Tabs defaultValue="simulation" className="w-full">
+              <TabsList className="grid grid-cols-4 bg-slate-900 border border-slate-800 rounded-2xl">
+                <TabsTrigger value="simulation">Simulation</TabsTrigger>
+                <TabsTrigger value="agents">Agents</TabsTrigger>
+                <TabsTrigger value="edges">Edges</TabsTrigger>
+                <TabsTrigger value="matrices">Matrices</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="simulation" className="mt-4 space-y-6">
+                <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                  <CardHeader>
+                    <CardTitle>Monte Carlo score trajectory</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[320px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={monteCarloData}>
+                        <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+                        <XAxis dataKey="step" stroke="#94a3b8" />
+                        <YAxis stroke="#94a3b8" />
+                        <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 16 }} />
+                        <Line type="monotone" dataKey="dagScore" stroke="#60a5fa" strokeWidth={2.5} dot={false} name="Baseline DAG" />
+                        <Line type="monotone" dataKey="loopScore" stroke="#34d399" strokeWidth={2.5} dot={false} name="DAG + local loop" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                  <CardHeader>
+                    <CardTitle>Executor and critic integrity under noise</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[320px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={monteCarloData}>
+                        <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+                        <XAxis dataKey="step" stroke="#94a3b8" />
+                        <YAxis stroke="#94a3b8" domain={[0.6, 1]} />
+                        <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 16 }} />
+                        <Line type="monotone" dataKey="dagExecutor" stroke="#38bdf8" strokeWidth={2} dot={false} name="Executor, DAG" />
+                        <Line type="monotone" dataKey="loopExecutor" stroke="#22c55e" strokeWidth={2} dot={false} name="Executor, loop" />
+                        <Line type="monotone" dataKey="dagCritic" stroke="#c084fc" strokeWidth={2} dot={false} name="Critic, DAG" />
+                        <Line type="monotone" dataKey="loopCritic" stroke="#f472b6" strokeWidth={2} dot={false} name="Critic, loop" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="agents" className="mt-4">
+                <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                  <CardHeader>
+                    <CardTitle>Agent score breakdown</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[360px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={PAgents.map((a) => ({ name: a.name, score: Number(a.score.toFixed(4)) }))}>
+                        <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+                        <XAxis dataKey="name" stroke="#94a3b8" angle={-20} textAnchor="end" height={70} />
+                        <YAxis stroke="#94a3b8" />
+                        <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 16 }} />
+                        <Bar dataKey="score" fill="#60a5fa" radius={[10, 10, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="edges" className="mt-4">
+                <Card className="bg-slate-900/80 border-slate-800 rounded-3xl">
+                  <CardHeader>
+                    <CardTitle>Edge values</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {edgeComparison.map((edge) => (
+                        <div key={edge.edge} className={`rounded-2xl border p-4 ${edge.active ? "border-slate-700 bg-slate-950/60" : "border-slate-800 bg-slate-950/30 opacity-50"}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="font-medium">{edge.edge}</div>
+                            <Badge className={edge.active ? "bg-emerald-500/20 text-emerald-300" : "bg-slate-800 text-slate-400"}>{edge.active ? "active" : "inactive"}</Badge>
+                          </div>
+                          <div className="mt-2 text-sm text-slate-300">ρ = {fmt(edge.rho, 2)}</div>
+                          <div className="text-sm text-slate-300">W = {fmt(edge.weight, 4)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="matrices" className="mt-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <MatrixCard title="Binary adjacency, baseline DAG" matrix={buildAdjacency(baseEdges)} />
+                  <MatrixCard title="Weighted adjacency, baseline DAG" matrix={baseWeighted} decimals={4} />
+                  <MatrixCard title="Binary adjacency, loop-enabled" matrix={buildAdjacency([...baseEdges, LOOP_EDGE])} />
+                  <MatrixCard title="Weighted adjacency, loop-enabled" matrix={loopWeighted} decimals={4} />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ title, value, subtitle, accent = "slate" }: { title: string; value: string; subtitle: string; accent?: "slate" | "emerald" | "rose" }) {
+  const styles = {
+    slate: "from-slate-900 to-slate-950 border-slate-800",
+    emerald: "from-emerald-950/80 to-slate-950 border-emerald-700/40",
+    rose: "from-rose-950/80 to-slate-950 border-rose-700/40",
+  };
+  return (
+    <Card className={`rounded-3xl border bg-gradient-to-br ${styles[accent]}`}>
+      <CardContent className="p-5">
+        <div className="text-sm text-slate-400">{title}</div>
+        <div className="mt-2 text-3xl font-semibold tracking-tight">{value}</div>
+        <div className="mt-1 text-xs text-slate-500">{subtitle}</div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function RuleRow({ label, formula, pass, detail }: { label: string; formula: string; pass: boolean; detail: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="font-medium">{label}</div>
+          <div className="mt-1 font-mono text-sm text-slate-300">{formula}</div>
+          <div className="mt-1 text-xs text-slate-500">{detail}</div>
+        </div>
+        <Badge className={pass ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"}>{pass ? "pass" : "fail"}</Badge>
+      </div>
+    </div>
+  );
+}
+
+function Node({ x, y, label, color, sub }: { x: number; y: number; label: string; color: string; sub?: string }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={26} className={color} fill="currentColor" />
+      <circle cx={x} cy={y} r={28} fill="none" stroke="rgba(255,255,255,0.18)" />
+      <text x={x} y={y + 5} textAnchor="middle" fill="white" fontSize="12" fontWeight="700">{label}</text>
+      {sub ? <text x={x} y={y + 48} textAnchor="middle" fill="#cbd5e1" fontSize="11">{sub}</text> : null}
+    </g>
+  );
+}
+
+function EdgePath({ x1, y1, x2, y2, dashed = false, green = false }: { x1: number; y1: number; x2: number; y2: number; dashed?: boolean; green?: boolean }) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const sx = x1 + ux * 30;
+  const sy = y1 + uy * 30;
+  const ex = x2 - ux * 30;
+  const ey = y2 - uy * 30;
+  return (
+    <g>
+      <defs>
+        <marker id={green ? "arrow-green" : "arrow-default"} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill={green ? "#22c55e" : "#94a3b8"} />
+        </marker>
+      </defs>
+      <line x1={sx} y1={sy} x2={ex} y2={ey} stroke={green ? "#22c55e" : "#94a3b8"} strokeWidth="2.2" strokeDasharray={dashed ? "6 6" : undefined} markerEnd={`url(#${green ? "arrow-green" : "arrow-default"})`} />
+    </g>
+  );
+}
+
+function ArchitectureDiagram({ loopOn }: { loopOn: boolean }) {
+  return (
+    <div className="overflow-auto">
+      <svg viewBox="0 0 620 340" className="w-full h-auto">
+        <EdgePath x1={80} y1={70} x2={220} y2={70} />
+        <EdgePath x1={220} y1={70} x2={120} y2={170} />
+        <EdgePath x1={220} y1={70} x2={220} y2={170} />
+        <EdgePath x1={220} y1={70} x2={320} y2={170} />
+        <EdgePath x1={120} y1={170} x2={220} y2={270} dashed />
+        <EdgePath x1={220} y1={170} x2={220} y2={270} />
+        <EdgePath x1={320} y1={170} x2={220} y2={270} dashed />
+        <EdgePath x1={220} y1={270} x2={220} y2={320} />
+        {loopOn ? <EdgePath x1={220} y1={320} x2={220} y2={270} dashed green /> : null}
+
+        <Node x={80} y={70} label="1" color="rgb(168 85 247)" sub="Router" />
+        <Node x={220} y={70} label="2" color="rgb(59 130 246)" sub="Planner" />
+        <Node x={120} y={170} label="3" color="rgb(34 197 94)" sub="Researcher" />
+        <Node x={220} y={170} label="4" color="rgb(245 158 11)" sub="Memory" />
+        <Node x={320} y={170} label="5" color="rgb(239 68 68)" sub="ToolUser" />
+        <Node x={220} y={270} label="6" color="rgb(6 182 212)" sub="Executor" />
+        <Node x={220} y={320} label="7" color="rgb(217 70 239)" sub="Critic" />
+      </svg>
+    </div>
+  );
+}
+
+function MatrixCard({ title, matrix, decimals = 0 }: { title: string; matrix: number[][]; decimals?: number }) {
+  return (
+    <Card className="bg-slate-900/80 border-slate-800 rounded-3xl overflow-hidden">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-auto rounded-2xl border border-slate-800">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-950/80">
+              <tr>
+                <th className="p-2 text-slate-400"></th>
+                {matrix[0].map((_, j) => (
+                  <th key={j} className="p-2 text-slate-400 font-medium">{j + 1}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {matrix.map((row, i) => (
+                <tr key={i} className="border-t border-slate-800">
+                  <td className="p-2 text-slate-400 font-medium bg-slate-950/40">{i + 1}</td>
+                  {row.map((val, j) => (
+                    <td key={j} className="p-2 text-center font-mono text-slate-200">
+                      {decimals === 0 ? val : Number(val).toFixed(decimals)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
