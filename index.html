@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -9,503 +10,417 @@
       --bg-0: #020617;
       --bg-1: #081120;
       --panel: rgba(10, 18, 34, 0.88);
-      --panel-strong: rgba(15, 23, 42, 0.96);
       --line: rgba(148, 163, 184, 0.15);
       --line-strong: rgba(148, 163, 184, 0.25);
       --text: #e5eefb;
       --muted: #93a4bf;
       --subtle: #64748b;
-      --good: #2dd4bf;
-      --good-2: #34d399;
+      --good: #34d399;
+      --warn: #f59e0b;
       --bad: #fb7185;
       --blue: #60a5fa;
-      --blue-2: #38bdf8;
-      --violet: #a78bfa;
-      --amber: #f59e0b;
-      --cyan: #22d3ee;
+      --cyan: #38bdf8;
+      --violet: #c084fc;
       --pink: #f472b6;
-      --green: #4ade80;
       --shadow: 0 30px 80px rgba(0,0,0,0.35);
       --radius-xl: 28px;
       --radius-lg: 22px;
       --radius-md: 16px;
-      --radius-sm: 12px;
     }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(59,130,246,0.12), transparent 34%),
-        radial-gradient(circle at top right, rgba(168,85,247,0.10), transparent 28%),
-        radial-gradient(circle at bottom center, rgba(6,182,212,0.08), transparent 34%),
-        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
-      min-height: 100vh;
-    }
+```
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(59,130,246,0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(168,85,247,0.10), transparent 28%),
+    radial-gradient(circle at bottom center, rgba(6,182,212,0.08), transparent 34%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+  min-height: 100vh;
+}
 
-    .shell {
-      max-width: 1520px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+.shell { max-width: 1680px; margin: 0 auto; padding: 24px; }
+.hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(15, 23, 42, 0.75); color: #cdd8eb; font-size: 12px;
+}
+.hero h1 { margin: 12px 0 10px; font-size: clamp(32px, 4.5vw, 58px); line-height: 1; letter-spacing: -0.04em; max-width: 980px; }
+.hero p { margin: 0; max-width: 980px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+.hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.btn {
+  border: 1px solid var(--line); background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(6,10,18,0.95));
+  color: var(--text); border-radius: 14px; padding: 12px 16px; font-size: 13px; cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+}
+.btn:hover { transform: translateY(-1px); border-color: var(--line-strong); }
+.btn.secondary { background: rgba(2,6,23,0.48); }
+.btn.danger { border-color: rgba(251,113,133,0.25); }
 
-    .hero {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 22px;
-    }
+.layout { display: grid; grid-template-columns: 430px 1fr; gap: 24px; }
+.panel {
+  background: linear-gradient(180deg, rgba(15,23,42,0.88), rgba(8,17,32,0.90));
+  border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow); overflow: hidden;
+}
+.panel-header { padding: 20px 22px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.panel-title { font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+.panel-body { padding: 20px 22px 22px; }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(15, 23, 42, 0.75);
-      color: #cdd8eb;
-      font-size: 12px;
-      letter-spacing: 0.02em;
-    }
+.controls, .stack { display: grid; gap: 18px; }
+.control-card, .sub-panel {
+  border: 1px solid var(--line); background: rgba(2,6,23,0.36); border-radius: var(--radius-md); padding: 14px;
+}
+.control-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.agent-row { display: flex; align-items: center; gap: 12px; }
+.chip {
+  width: 30px; height: 30px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 10px 25px rgba(0,0,0,0.25);
+}
+.agent-name { font-size: 14px; font-weight: 600; }
+.agent-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.value-pill {
+  padding: 6px 10px; background: rgba(15,23,42,0.92); border: 1px solid var(--line); border-radius: 999px;
+  color: #d8e4f3; font-size: 12px; min-width: 62px; text-align: center;
+}
+.label-sm { font-size: 13px; color: #d8e4f3; }
+.subtle { color: var(--muted); font-size: 12px; }
 
-    .hero h1 {
-      margin: 12px 0 10px;
-      font-size: clamp(32px, 4.5vw, 58px);
-      line-height: 1;
-      letter-spacing: -0.04em;
-      max-width: 980px;
-    }
+input[type="range"] {
+  width: 100%; appearance: none; height: 8px; border-radius: 999px;
+  background: linear-gradient(90deg, rgba(59,130,246,0.35), rgba(34,211,238,0.35)); outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none; width: 18px; height: 18px; border-radius: 999px; background: white;
+  border: 3px solid #2563eb; cursor: pointer; box-shadow: 0 8px 22px rgba(37,99,235,0.35);
+}
+input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--good); }
+input[type="text"], input[type="number"], select, textarea {
+  width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(15,23,42,0.85); color: var(--text);
+}
+textarea { min-height: 96px; resize: vertical; }
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.triple-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-    .hero p {
-      margin: 0;
-      max-width: 920px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-    }
+.main { display: grid; gap: 24px; }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.metric {
+  padding: 18px; border-radius: var(--radius-lg); border: 1px solid var(--line);
+  background: radial-gradient(circle at top left, rgba(96,165,250,0.08), transparent 40%), linear-gradient(180deg, rgba(15,23,42,0.90), rgba(2,6,23,0.88));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.metric-value { font-size: clamp(30px, 2vw, 38px); font-weight: 720; margin-top: 10px; letter-spacing: -0.03em; }
+.metric-note { font-size: 12px; color: var(--subtle); margin-top: 8px; }
 
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+.result-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 16px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 
-    .btn {
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(6,10,18,0.95));
-      color: var(--text);
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.20);
-    }
-    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); }
+.arch-wrap {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: radial-gradient(circle at top, rgba(51,65,85,0.52), transparent 45%), linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.80));
+  overflow: hidden;
+}
+.arch-wrap svg { display: block; width: 100%; height: 520px; }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 390px 1fr;
-      gap: 24px;
-    }
+.rules { display: grid; gap: 12px; }
+.rule {
+  border: 1px solid var(--line); border-radius: var(--radius-md); background: rgba(2,6,23,0.40); padding: 14px;
+}
+.rule-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.rule-title { font-weight: 650; font-size: 14px; }
+.rule-formula { margin-top: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #d7e1f0; }
+.rule-detail { margin-top: 6px; font-size: 12px; color: var(--muted); }
+.status-pass, .status-fail {
+  padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.status-pass { color: #b6fff0; background: rgba(52,211,153,0.16); border: 1px solid rgba(52,211,153,0.25); }
+.status-fail { color: #ffd2dd; background: rgba(251,113,133,0.16); border: 1px solid rgba(251,113,133,0.25); }
 
-    .panel {
-      background: linear-gradient(180deg, rgba(15,23,42,0.88), rgba(8,17,32,0.90));
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
+.signal-pill {
+  padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); background: rgba(2,6,23,0.42); font-size: 13px; color: var(--text);
+}
+.signal-pill.good { border-color: rgba(52,211,153,0.30); background: rgba(52,211,153,0.08); }
+.signal-pill.warn { border-color: rgba(245,158,11,0.30); background: rgba(245,158,11,0.08); }
+.signal-pill.bad { border-color: rgba(251,113,133,0.30); background: rgba(251,113,133,0.08); }
+.signal-pill .subline { display:block; margin-top:4px; color: var(--muted); font-size:12px; }
 
-    .panel-header {
-      padding: 20px 22px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.tab {
+  border: 1px solid var(--line); background: rgba(2,6,23,0.45); color: var(--text); border-radius: 999px; padding: 10px 14px; cursor: pointer; font-size: 13px;
+}
+.tab.active { background: linear-gradient(180deg, rgba(37,99,235,0.95), rgba(29,78,216,0.95)); border-color: rgba(96,165,250,0.55); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-    .panel-title {
-      font-size: 20px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
+.chart-card, .table-card {
+  border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(2,6,23,0.32); padding: 16px;
+}
+.chart-title, .table-title { font-size: 15px; font-weight: 650; margin-bottom: 12px; }
+.chart-canvas { width: 100%; height: 320px; display: block; border-radius: 16px; background: rgba(2,6,23,0.35); }
 
-    .panel-body { padding: 20px 22px 22px; }
+.edge-grid, .agent-admin-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.edge-card, .scenario-card, .agent-admin-card {
+  border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px; background: rgba(2,6,23,0.36);
+}
+.edge-card.inactive { opacity: 0.45; }
+.edge-top { display:flex; gap:10px; justify-content:space-between; align-items:center; margin-bottom:10px; }
 
-    .controls {
-      display: grid;
-      gap: 18px;
-    }
+.matrix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.compare-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-    .control-card {
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,0.36);
-      border-radius: var(--radius-md);
-      padding: 14px;
-    }
+table {
+  width: 100%; border-collapse: collapse; background: rgba(2,6,23,0.36); border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+}
+th, td {
+  border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px; text-align: center; font-size: 12px;
+}
+th:first-child, td:first-child { background: rgba(15,23,42,0.78); color: var(--muted); font-weight: 700; }
+th { color: var(--muted); font-weight: 700; }
+td { color: #dce6f5; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-    .control-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
+.footer { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 
-    .agent-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+@media (max-width: 1180px) {
+  .layout { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .result-grid { grid-template-columns: 1fr 1fr; }
+  .two-col, .matrix-grid, .compare-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .shell { padding: 16px; }
+  .metrics, .result-grid { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; align-items: flex-start; }
+  .mini-grid, .triple-grid { grid-template-columns: 1fr; }
+}
 
-    .chip {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: white;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 10px 25px rgba(0,0,0,0.25);
-    }
+@media print {
+  body {
+    background: white !important;
+    color: #0f172a !important;
+  }
+  .shell { max-width: 100%; padding: 0; }
+  .hero-actions, .controls, .tabs, #simulation, #edges, #matrices, #agents, .footer { display: none !important; }
+  .layout { grid-template-columns: 1fr !important; }
+  .panel, .metric, .chart-card, .table-card, .scenario-card {
+    background: white !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  .metric-value, .panel-title, .chart-title, .table-title, .rule-title, .signal-pill, .metric-label, .metric-note, .subtle, .rule-formula, .rule-detail {
+    color: #0f172a !important;
+  }
+  .signal-pill.good, .signal-pill.warn, .signal-pill.bad { background: white !important; }
+  .arch-wrap, .rules { break-inside: avoid; }
+  .result-grid, .two-col, .compare-grid { grid-template-columns: 1fr 1fr !important; }
+  canvas { border: 1px solid #e2e8f0; }
+  @page { size: portrait; margin: 16mm; }
+}
+```
 
-    .agent-name { font-size: 14px; font-weight: 600; }
-    .agent-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .value-pill {
-      padding: 6px 10px;
-      background: rgba(15,23,42,0.92);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: #d8e4f3;
-      font-size: 12px;
-      min-width: 62px;
-      text-align: center;
-    }
-
-    .label-sm { font-size: 13px; color: #d8e4f3; }
-    .subtle { color: var(--muted); font-size: 12px; }
-
-    input[type="range"] {
-      width: 100%;
-      appearance: none;
-      height: 8px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(59,130,246,0.35), rgba(34,211,238,0.35));
-      outline: none;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: white;
-      border: 3px solid #2563eb;
-      cursor: pointer;
-      box-shadow: 0 8px 22px rgba(37,99,235,0.35);
-    }
-    input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--good-2); }
-
-    .main { display: grid; gap: 24px; }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .metric {
-      padding: 18px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--line);
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,0.08), transparent 40%),
-        linear-gradient(180deg, rgba(15,23,42,0.90), rgba(2,6,23,0.88));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-    }
-
-    .metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-    .metric-value { font-size: clamp(30px, 2vw, 38px); font-weight: 720; margin-top: 10px; letter-spacing: -0.03em; }
-    .metric-note { font-size: 12px; color: var(--subtle); margin-top: 8px; }
-
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
-    .arch-wrap {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background:
-        radial-gradient(circle at top, rgba(51,65,85,0.52), transparent 45%),
-        linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.80));
-      overflow: hidden;
-    }
-    .arch-wrap svg { display: block; width: 100%; height: 380px; }
-
-    .rules { display: grid; gap: 12px; }
-    .rule {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      background: rgba(2,6,23,0.40);
-      padding: 14px;
-    }
-    .rule-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-    }
-    .rule-title { font-weight: 650; font-size: 14px; }
-    .rule-formula { margin-top: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #d7e1f0; }
-    .rule-detail { margin-top: 6px; font-size: 12px; color: var(--muted); }
-    .status-pass, .status-fail {
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .status-pass { color: #b6fff0; background: rgba(45,212,191,0.16); border: 1px solid rgba(45,212,191,0.25); }
-    .status-fail { color: #ffd2dd; background: rgba(251,113,133,0.16); border: 1px solid rgba(251,113,133,0.25); }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-    .tab {
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,0.45);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-    .tab.active {
-      background: linear-gradient(180deg, rgba(37,99,235,0.95), rgba(29,78,216,0.95));
-      border-color: rgba(96,165,250,0.55);
-    }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .chart-card, .table-card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: rgba(2,6,23,0.32);
-      padding: 16px;
-    }
-    .chart-title, .table-title { font-size: 15px; font-weight: 650; margin-bottom: 12px; }
-    .chart-canvas { width: 100%; height: 320px; display: block; border-radius: 16px; background: rgba(2,6,23,0.35); }
-
-    .edge-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .edge-card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      background: rgba(2,6,23,0.36);
-    }
-    .edge-card.inactive { opacity: 0.45; }
-
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(2,6,23,0.36);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-    }
-    th, td {
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      padding: 10px;
-      text-align: center;
-      font-size: 12px;
-    }
-    th:first-child, td:first-child {
-      background: rgba(15,23,42,0.78);
-      color: var(--muted);
-      font-weight: 700;
-    }
-    th { color: var(--muted); font-weight: 700; }
-    td { color: #dce6f5; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-
-    .footer {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 1180px) {
-      .layout { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: repeat(2, 1fr); }
-      .two-col, .matrix-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .shell { padding: 16px; }
-      .metrics { grid-template-columns: 1fr; }
-      .edge-grid { grid-template-columns: 1fr; }
-      .hero { flex-direction: column; align-items: flex-start; }
-    }
   </style>
 </head>
 <body>
   <div class="shell">
     <div class="hero">
       <div>
-        <div class="badge"> </div>
+        <div class="badge">Standalone HTML • No CDN • Add / Remove Agents + Edges • JSON Import / Export</div>
         <h1>Seven-Agent Coherence Simulator</h1>
         <p>
-          Production-style dashboard for the 7-agent DAG, optional local Critic → Executor loop, structural and dynamic rule checks,
-          Monte Carlo stochastic behavior, edge weights, and adjacency matrices.
+          Production-style dashboard for the DAG or looped graph, with editable custom labels, custom edge weights, custom add/remove agents,
+          custom add/remove edges, scenario save/load and compare, JSON import/export, cleaner print-to-PDF, and a sellable result summary.
         </p>
       </div>
       <div class="hero-actions">
-        <button class="btn" id="resetBtn">Reset defaults</button>
+        <button class="btn" id="saveScenarioBtn">Save scenario</button>
+        <button class="btn secondary" id="exportJsonBtn">Export JSON</button>
+        <button class="btn secondary" id="importJsonBtn">Import JSON</button>
+        <button class="btn secondary" id="exportPdfBtn">Export PDF</button>
+        <button class="btn secondary" id="resetBtn">Reset defaults</button>
+        <input type="file" id="jsonFileInput" accept="application/json" style="display:none;" />
       </div>
     </div>
 
-    <div class="layout">
+```
+<div class="layout">
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">Controls</div></div>
+    <div class="panel-body"><div class="controls" id="controls"></div></div>
+  </section>
+
+  <section class="main">
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Baseline score</div><div class="metric-value" id="scoreDag">—</div><div class="metric-note">Graph without optional loop</div></div>
+      <div class="metric"><div class="metric-label">Loop-enabled score</div><div class="metric-value" id="scoreLoop">—</div><div class="metric-note">Graph with optional loop</div></div>
+      <div class="metric"><div class="metric-label">Loop benefit</div><div class="metric-value" id="scoreDiff">—</div><div class="metric-note">Loop − baseline</div></div>
+      <div class="metric"><div class="metric-label">Threshold gap</div><div class="metric-value" id="thresholdGap">—</div><div class="metric-note">Wloop − (τ + μ)</div></div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-header"><div class="panel-title">Result Page</div></div>
+      <div class="panel-body">
+        <div class="result-grid">
+          <div class="metric" style="min-height:170px;">
+            <div class="metric-label">System Score</div>
+            <div class="metric-value" id="resultArchitectureScore">—</div>
+            <div class="metric-note" id="resultArchitectureLabel">Your architecture score</div>
+          </div>
+          <div class="chart-card" style="min-height:170px;"><div class="chart-title">Risk Flags</div><div id="riskFlags" style="display:grid;gap:10px;"></div></div>
+          <div class="chart-card" style="min-height:170px;"><div class="chart-title">Recommendation</div><div id="recommendations" style="display:grid;gap:10px;"></div></div>
+          <div class="chart-card" style="min-height:170px;"><div class="chart-title">ROI Translation</div><div id="roiTranslation" style="display:grid;gap:10px;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="two-col">
       <section class="panel">
-        <div class="panel-header"><div class="panel-title">Controls</div></div>
+        <div class="panel-header"><div class="panel-title">Architecture view</div></div>
         <div class="panel-body">
-          <div class="controls" id="controls"></div>
+          <div class="arch-wrap">
+            <svg viewBox="0 0 800 520">
+              <defs>
+                <marker id="arrowDefault" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#94a3b8"></path></marker>
+                <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#34d399"></path></marker>
+              </defs>
+              <g id="archEdges"></g>
+              <g id="archNodes"></g>
+            </svg>
+          </div>
         </div>
       </section>
 
-      <section class="main">
-        <div class="metrics">
-          <div class="metric"><div class="metric-label">Baseline DAG score</div><div class="metric-value" id="scoreDag">—</div><div class="metric-note">Acyclic architecture</div></div>
-          <div class="metric"><div class="metric-label">Loop score</div><div class="metric-value" id="scoreLoop">—</div><div class="metric-note">DAG + local critic loop</div></div>
-          <div class="metric"><div class="metric-label">Loop benefit</div><div class="metric-value" id="scoreDiff">—</div><div class="metric-note">Loop − DAG</div></div>
-          <div class="metric"><div class="metric-label">W₇₆ threshold gap</div><div class="metric-value" id="thresholdGap">—</div><div class="metric-note">W₇₆ − (τ + μ)</div></div>
-        </div>
-
-        <div class="two-col">
-          <section class="panel">
-            <div class="panel-header"><div class="panel-title">Architecture view</div></div>
-            <div class="panel-body">
-              <div class="arch-wrap">
-                <svg viewBox="0 0 620 380">
-                  <defs>
-                    <marker id="arrowDefault" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-                      <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8"></path>
-                    </marker>
-                    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-                      <path d="M0,0 L8,4 L0,8 z" fill="#34d399"></path>
-                    </marker>
-                  </defs>
-                  <g id="archEdges"></g>
-                  <g id="archNodes"></g>
-                </svg>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header"><div class="panel-title">Decision rules</div></div>
-            <div class="panel-body"><div class="rules" id="rules"></div></div>
-          </section>
-        </div>
-
-        <section class="panel">
-          <div class="panel-body">
-            <div class="tabs">
-              <button class="tab active" data-tab="simulation">Simulation</button>
-              <button class="tab" data-tab="agents">Agents</button>
-              <button class="tab" data-tab="edges">Edges</button>
-              <button class="tab" data-tab="matrices">Matrices</button>
-            </div>
-
-            <div class="tab-panel active" id="simulation">
-              <div class="two-col">
-                <div class="chart-card">
-                  <div class="chart-title">Monte Carlo score trajectory</div>
-                  <canvas class="chart-canvas" id="scoreChart" width="760" height="320"></canvas>
-                </div>
-                <div class="chart-card">
-                  <div class="chart-title">Executor and Critic integrity under noise</div>
-                  <canvas class="chart-canvas" id="integrityChart" width="760" height="320"></canvas>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-panel" id="agents">
-              <div class="chart-card">
-                <div class="chart-title">Agent score breakdown</div>
-                <canvas class="chart-canvas" id="agentChart" width="1200" height="320"></canvas>
-              </div>
-            </div>
-
-            <div class="tab-panel" id="edges">
-              <div class="chart-card">
-                <div class="chart-title">Edge values</div>
-                <div class="edge-grid" id="edgeGrid"></div>
-              </div>
-            </div>
-
-            <div class="tab-panel" id="matrices">
-              <div class="matrix-grid">
-                <div class="table-card"><div class="table-title">Binary adjacency, baseline DAG</div><div id="matrixBinaryDag"></div></div>
-                <div class="table-card"><div class="table-title">Weighted adjacency, baseline DAG</div><div id="matrixWeightedDag"></div></div>
-                <div class="table-card"><div class="table-title">Binary adjacency, loop-enabled</div><div id="matrixBinaryLoop"></div></div>
-                <div class="table-card"><div class="table-title">Weighted adjacency, loop-enabled</div><div id="matrixWeightedLoop"></div></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div class="footer">
-          Fully self-contained build. No CDN, no frameworks, no external chart libraries. All rendering is handled with plain HTML, CSS, SVG, and canvas.
-        </div>
+      <section class="panel">
+        <div class="panel-header"><div class="panel-title">Decision rules</div></div>
+        <div class="panel-body"><div class="rules" id="rules"></div></div>
       </section>
     </div>
+
+    <section class="panel">
+      <div class="panel-header"><div class="panel-title">Saved scenarios / compare runs</div></div>
+      <div class="panel-body">
+        <div class="mini-grid" style="margin-bottom:14px;">
+          <div>
+            <div class="subtle" style="margin-bottom:8px;">Scenario name</div>
+            <input type="text" id="scenarioName" placeholder="Example: Loop stress test" />
+          </div>
+          <div>
+            <div class="subtle" style="margin-bottom:8px;">Load scenario</div>
+            <select id="scenarioSelect"><option value="">Select a saved scenario</option></select>
+          </div>
+        </div>
+        <div class="hero-actions" style="margin-bottom:14px;">
+          <button class="btn secondary" id="loadScenarioBtn">Load scenario</button>
+          <button class="btn secondary" id="deleteScenarioBtn">Delete scenario</button>
+          <button class="btn secondary" id="setCompareABtn">Set as Compare A</button>
+          <button class="btn secondary" id="setCompareBBtn">Set as Compare B</button>
+        </div>
+        <div class="compare-grid">
+          <div class="scenario-card"><div class="panel-title" style="font-size:16px;margin-bottom:8px;">Compare A</div><div id="compareA">Not set</div></div>
+          <div class="scenario-card"><div class="panel-title" style="font-size:16px;margin-bottom:8px;">Compare B</div><div id="compareB">Not set</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-body">
+        <div class="tabs">
+          <button class="tab active" data-tab="simulation">Simulation</button>
+          <button class="tab" data-tab="agents">Agents</button>
+          <button class="tab" data-tab="edges">Edges</button>
+          <button class="tab" data-tab="matrices">Matrices</button>
+        </div>
+
+        <div class="tab-panel active" id="simulation">
+          <div class="two-col">
+            <div class="chart-card"><div class="chart-title">Monte Carlo score trajectory</div><canvas class="chart-canvas" id="scoreChart" width="760" height="320"></canvas></div>
+            <div class="chart-card"><div class="chart-title">Key integrity under noise</div><canvas class="chart-canvas" id="integrityChart" width="760" height="320"></canvas></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="agents">
+          <div class="stack">
+            <div class="chart-card"><div class="chart-title">Agent score breakdown</div><canvas class="chart-canvas" id="agentChart" width="1200" height="320"></canvas></div>
+            <div class="chart-card">
+              <div class="chart-title">Custom add / remove agents</div>
+              <div class="mini-grid" style="margin-bottom:12px;">
+                <div><div class="subtle" style="margin-bottom:6px;">Agent key</div><input type="text" id="newAgentKey" placeholder="example: reviewer2" /></div>
+                <div><div class="subtle" style="margin-bottom:6px;">Agent label</div><input type="text" id="newAgentName" placeholder="Example: Reviewer 2" /></div>
+              </div>
+              <div class="mini-grid" style="margin-bottom:12px;">
+                <div><div class="subtle" style="margin-bottom:6px;">Default D</div><input type="number" min="0.5" max="1" step="0.01" id="newAgentD" value="0.90" /></div>
+                <div><div class="subtle" style="margin-bottom:6px;">Color</div><input type="text" id="newAgentColor" value="#64748b" /></div>
+              </div>
+              <div class="hero-actions" style="margin-bottom:12px;"><button class="btn secondary" id="addAgentBtn">Add agent</button></div>
+              <div class="agent-admin-grid" id="agentAdminGrid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="edges">
+          <div class="stack">
+            <div class="chart-card">
+              <div class="chart-title">Custom add / remove edges</div>
+              <div class="triple-grid" style="margin-bottom:12px;">
+                <div><div class="subtle" style="margin-bottom:6px;">From agent</div><select id="newEdgeFrom"></select></div>
+                <div><div class="subtle" style="margin-bottom:6px;">To agent</div><select id="newEdgeTo"></select></div>
+                <div><div class="subtle" style="margin-bottom:6px;">ρ weight</div><input type="number" min="-1" max="1" step="0.01" id="newEdgeRho" value="0.90" /></div>
+              </div>
+              <div class="hero-actions" style="margin-bottom:12px;"><button class="btn secondary" id="addEdgeBtn">Add edge</button></div>
+            </div>
+            <div class="chart-card"><div class="chart-title">Editable custom edge weights</div><div class="edge-grid" id="edgeGrid"></div></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="matrices">
+          <div class="matrix-grid">
+            <div class="table-card"><div class="table-title">Binary adjacency, baseline graph</div><div id="matrixBinaryDag"></div></div>
+            <div class="table-card"><div class="table-title">Weighted adjacency, baseline graph</div><div id="matrixWeightedDag"></div></div>
+            <div class="table-card"><div class="table-title">Binary adjacency, loop-enabled graph</div><div id="matrixBinaryLoop"></div></div>
+            <div class="table-card"><div class="table-title">Weighted adjacency, loop-enabled graph</div><div id="matrixWeightedLoop"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Fully self-contained build. No CDN, no frameworks, no external chart libraries. Includes custom add/remove agents and edges, JSON import/export, saved scenarios and compare, and a cleaner print stylesheet for client-style PDF export.
+    </div>
+  </section>
+</div>
+```
+
   </div>
 
   <script>
-    const AGENTS = [
-      { id: 1, key: "router", name: "Router", short: "1", color: "#a855f7", role: "Task routing", defaultD: 0.96 },
-      { id: 2, key: "planner", name: "Planner", short: "2", color: "#3b82f6", role: "Plan decomposition", defaultD: 0.93 },
-      { id: 3, key: "researcher", name: "Researcher", short: "3", color: "#22c55e", role: "Evidence gathering", defaultD: 0.88 },
-      { id: 4, key: "memory", name: "Memory", short: "4", color: "#f59e0b", role: "Context retrieval", defaultD: 0.97 },
-      { id: 5, key: "toolUser", name: "ToolUser", short: "5", color: "#ef4444", role: "Tool execution", defaultD: 0.91 },
-      { id: 6, key: "executor", name: "Executor", short: "6", color: "#06b6d4", role: "Response assembly", defaultD: 0.92 },
-      { id: 7, key: "critic", name: "Critic", short: "7", color: "#d946ef", role: "Verification", defaultD: 0.95 },
+    const DEFAULT_AGENTS = [
+      { id: 1, key: "router", name: "Router", short: "1", color: "#a855f7", role: "Task routing", defaultD: 0.96, core: true },
+      { id: 2, key: "planner", name: "Planner", short: "2", color: "#3b82f6", role: "Plan decomposition", defaultD: 0.93, core: true },
+      { id: 3, key: "researcher", name: "Researcher", short: "3", color: "#22c55e", role: "Evidence gathering", defaultD: 0.88, core: true },
+      { id: 4, key: "memory", name: "Memory", short: "4", color: "#f59e0b", role: "Context retrieval", defaultD: 0.97, core: true },
+      { id: 5, key: "toolUser", name: "ToolUser", short: "5", color: "#ef4444", role: "Tool execution", defaultD: 0.91, core: true },
+      { id: 6, key: "executor", name: "Executor", short: "6", color: "#06b6d4", role: "Response assembly", defaultD: 0.92, core: true },
+      { id: 7, key: "critic", name: "Critic", short: "7", color: "#d946ef", role: "Verification", defaultD: 0.95, core: true },
     ];
 
-    const BASE_EDGES = [
-      { from: 1, to: 2, rho: 0.98, label: "1→2" },
-      { from: 2, to: 3, rho: 0.90, label: "2→3" },
-      { from: 2, to: 4, rho: 0.96, label: "2→4" },
-      { from: 2, to: 5, rho: 0.92, label: "2→5" },
-      { from: 3, to: 6, rho: 0.89, label: "3→6" },
-      { from: 4, to: 6, rho: 0.97, label: "4→6" },
-      { from: 5, to: 6, rho: 0.94, label: "5→6" },
-      { from: 6, to: 7, rho: 0.98, label: "6→7" },
+    const DEFAULT_EDGE_DEFS = [
+      { id: 'e1', fromKey: 'router', toKey: 'planner', rho: 0.98, label: 'router→planner', core: true, optional: false },
+      { id: 'e2', fromKey: 'planner', toKey: 'researcher', rho: 0.90, label: 'planner→researcher', core: true, optional: false },
+      { id: 'e3', fromKey: 'planner', toKey: 'memory', rho: 0.96, label: 'planner→memory', core: true, optional: false },
+      { id: 'e4', fromKey: 'planner', toKey: 'toolUser', rho: 0.92, label: 'planner→toolUser', core: true, optional: false },
+      { id: 'e5', fromKey: 'researcher', toKey: 'executor', rho: 0.89, label: 'researcher→executor', core: true, optional: false },
+      { id: 'e6', fromKey: 'memory', toKey: 'executor', rho: 0.97, label: 'memory→executor', core: true, optional: false },
+      { id: 'e7', fromKey: 'toolUser', toKey: 'executor', rho: 0.94, label: 'toolUser→executor', core: true, optional: false },
+      { id: 'e8', fromKey: 'executor', toKey: 'critic', rho: 0.98, label: 'executor→critic', core: true, optional: false },
+      { id: 'e9', fromKey: 'critic', toKey: 'executor', rho: 0.99, label: 'critic→executor', core: true, optional: true },
     ];
-    const LOOP_EDGE = { from: 7, to: 6, rho: 0.99, label: "7→6" };
 
     const defaults = {
-      D: { router: 0.96, planner: 0.93, researcher: 0.88, memory: 0.97, toolUser: 0.91, executor: 0.92, critic: 0.95 },
+      agents: JSON.parse(JSON.stringify(DEFAULT_AGENTS)),
+      D: Object.fromEntries(DEFAULT_AGENTS.map(a => [a.key, a.defaultD])),
+      edges: JSON.parse(JSON.stringify(DEFAULT_EDGE_DEFS)),
       lambda: 0.35,
       tau: 0.10,
       mu: 0.15,
@@ -518,41 +433,44 @@
     };
 
     const state = JSON.parse(JSON.stringify(defaults));
+    let compareA = null;
+    let compareB = null;
 
-    const colors = {
-      grid: 'rgba(148,163,184,0.16)',
-      axis: '#93a4bf',
-      text: '#e5eefb',
-      muted: '#93a4bf',
-      blue: '#60a5fa',
-      green: '#34d399',
-      cyan: '#38bdf8',
-      pink: '#f472b6',
-      violet: '#c084fc',
-      fill: 'rgba(96,165,250,0.12)'
-    };
+    const colors = { grid:'rgba(148,163,184,0.16)', axis:'#93a4bf', text:'#e5eefb', blue:'#60a5fa', green:'#34d399', cyan:'#38bdf8', pink:'#f472b6', violet:'#c084fc' };
 
     function fmt(x, d = 4) { return Number(x).toFixed(d); }
     function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+    function getAgentIndexMap(localState = state) { return Object.fromEntries(localState.agents.map((a, i) => [a.key, i])); }
+    function getDVec(localState = state) { return localState.agents.map(a => localState.D[a.key] ?? 0.9); }
+    function getEdges(loop, localState = state) {
+      return localState.edges.filter(e => !e.optional || loop).filter(e => localState.agents.some(a => a.key === e.fromKey) && localState.agents.some(a => a.key === e.toKey));
+    }
 
-    function getDVec() { return AGENTS.map(a => state.D[a.key]); }
-    function getEdges(loop) { return loop ? [...BASE_EDGES, LOOP_EDGE] : [...BASE_EDGES]; }
-
-    function buildAdjacency(edges, n = 7) {
+    function buildAdjacency(edges, localState = state) {
+      const n = localState.agents.length;
+      const map = getAgentIndexMap(localState);
       const m = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
-      edges.forEach(e => { m[e.from - 1][e.to - 1] = 1; });
+      edges.forEach(e => {
+        const i = map[e.fromKey], j = map[e.toKey];
+        if (i !== undefined && j !== undefined) m[i][j] = 1;
+      });
       return m;
     }
 
-    function buildWeighted(edges, dVec, n = 7) {
+    function buildWeighted(edges, dVec, localState = state) {
+      const n = localState.agents.length;
+      const map = getAgentIndexMap(localState);
       const m = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
-      edges.forEach(e => { m[e.from - 1][e.to - 1] = e.rho * dVec[e.from - 1] * dVec[e.to - 1]; });
+      edges.forEach(e => {
+        const i = map[e.fromKey], j = map[e.toKey];
+        if (i !== undefined && j !== undefined) m[i][j] = e.rho * dVec[i] * dVec[j];
+      });
       return m;
     }
 
     function spectralRadiusApprox(matrix, iters = 30) {
       const n = matrix.length;
-      let v = Array.from({ length: n }, () => 1 / Math.sqrt(n));
+      let v = Array.from({ length: n }, () => 1 / Math.sqrt(Math.max(1, n)));
       for (let k = 0; k < iters; k++) {
         const next = Array.from({ length: n }, (_, i) => matrix[i].reduce((sum, val, j) => sum + val * v[j], 0));
         const norm = Math.sqrt(next.reduce((s, x) => s + x * x, 0)) || 1;
@@ -564,20 +482,46 @@
       return Math.abs(num / den);
     }
 
-    function buildControls() {
+    function getStoredScenarios() {
+      try { return JSON.parse(localStorage.getItem('seven_agent_scenarios_v2') || '{}'); } catch { return {}; }
+    }
+    function setStoredScenarios(obj) { localStorage.setItem('seven_agent_scenarios_v2', JSON.stringify(obj)); }
+    function populateScenarioSelect() {
+      const select = document.getElementById('scenarioSelect');
+      const scenarios = getStoredScenarios();
+      select.innerHTML = '<option value="">Select a saved scenario</option>' + Object.keys(scenarios).map(name => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    function shortCode(i) {
+      const chars = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      return chars[i % chars.length] || String(i + 1);
+    }
+
+    function rebuildControlHtml() {
       const controls = document.getElementById('controls');
       controls.innerHTML = '';
 
-      AGENTS.forEach(agent => {
+      const labelEditor = document.createElement('div');
+      labelEditor.className = 'sub-panel';
+      labelEditor.innerHTML = `<div class="panel-title" style="font-size:16px;margin-bottom:12px;">Custom agent labels</div><div class="mini-grid" id="labelEditorGrid"></div>`;
+      controls.appendChild(labelEditor);
+      const labelGrid = labelEditor.querySelector('#labelEditorGrid');
+      state.agents.forEach(agent => {
+        const row = document.createElement('div');
+        row.innerHTML = `<div class="subtle" style="margin-bottom:6px;">${agent.key}</div><input type="text" id="label_${agent.key}" value="${agent.name}">`;
+        labelGrid.appendChild(row);
+      });
+
+      state.agents.forEach(agent => {
         const el = document.createElement('div');
         el.className = 'control-card';
         el.innerHTML = `
           <div class="control-row">
             <div class="agent-row">
-              <div class="chip" style="background:${agent.color}">${agent.short}</div>
+              <div class="chip" style="background:${agent.color}">${agent.short || shortCode(agent.id)}</div>
               <div>
-                <div class="agent-name">${agent.name}</div>
-                <div class="agent-role">${agent.role}</div>
+                <div class="agent-name" id="agent_name_${agent.key}">${agent.name}</div>
+                <div class="agent-role">${agent.role || 'Custom agent'}</div>
               </div>
             </div>
             <div class="value-pill">D = <span id="d_${agent.key}_label">${fmt(state.D[agent.key], 2)}</span></div>
@@ -597,36 +541,21 @@
         ["σ noise", "sigma", 0, 0.2, 0.005],
         ["Monte Carlo steps", "steps", 40, 220, 10],
       ];
-
       sliderDefs.forEach(([label, key, min, max, step]) => {
         const el = document.createElement('div');
         el.className = 'control-card';
-        el.innerHTML = `
-          <div class="control-row"><div class="label-sm">${label}</div><div class="value-pill" id="${key}_label">${state[key]}</div></div>
-          <input type="range" min="${min}" max="${max}" step="${step}" value="${state[key]}" id="${key}">
-        `;
+        el.innerHTML = `<div class="control-row"><div class="label-sm">${label}</div><div class="value-pill" id="${key}_label">${state[key]}</div></div><input type="range" min="${min}" max="${max}" step="${step}" value="${state[key]}" id="${key}">`;
         controls.appendChild(el);
       });
 
       const loopEl = document.createElement('div');
       loopEl.className = 'control-card';
-      loopEl.innerHTML = `
-        <div class="control-row">
-          <div>
-            <div class="label-sm">Enable local critic loop</div>
-            <div class="subtle">Adds edge 7 → 6</div>
-          </div>
-          <input type="checkbox" id="loopOn" ${state.loopOn ? 'checked' : ''}>
-        </div>
-      `;
+      loopEl.innerHTML = `<div class="control-row"><div><div class="label-sm">Enable optional loop edges</div><div class="subtle">Includes any edges marked optional</div></div><input type="checkbox" id="loopOn" ${state.loopOn ? 'checked' : ''}></div>`;
       controls.appendChild(loopEl);
 
-      AGENTS.forEach(agent => {
-        document.getElementById(`d_${agent.key}`).addEventListener('input', e => {
-          state.D[agent.key] = parseFloat(e.target.value);
-          document.getElementById(`d_${agent.key}_label`).textContent = fmt(state.D[agent.key], 2);
-          renderAll();
-        });
+      state.agents.forEach(agent => {
+        document.getElementById(`label_${agent.key}`).addEventListener('input', e => { agent.name = e.target.value || agent.name; renderAll(); });
+        document.getElementById(`d_${agent.key}`).addEventListener('input', e => { state.D[agent.key] = parseFloat(e.target.value); document.getElementById(`d_${agent.key}_label`).textContent = fmt(state.D[agent.key], 2); renderAll(); });
       });
 
       sliderDefs.forEach(([_, key]) => {
@@ -638,48 +567,182 @@
         });
       });
 
-      document.getElementById('loopOn').addEventListener('change', e => {
-        state.loopOn = e.target.checked;
-        renderAll();
-      });
+      document.getElementById('loopOn').addEventListener('change', e => { state.loopOn = e.target.checked; renderAll(); });
+    }
 
-      document.getElementById('resetBtn').addEventListener('click', () => {
+    function bindGlobalButtons() {
+      document.getElementById('resetBtn').onclick = () => {
         Object.assign(state, JSON.parse(JSON.stringify(defaults)));
-        buildControls();
-        renderAll();
-      });
+        compareA = null; compareB = null;
+        rebuildControlHtml(); populateScenarioSelect(); populateNodeSelects(); renderAll();
+      };
+      document.getElementById('saveScenarioBtn').onclick = saveScenario;
+      document.getElementById('loadScenarioBtn').onclick = loadScenario;
+      document.getElementById('deleteScenarioBtn').onclick = deleteScenario;
+      document.getElementById('setCompareABtn').onclick = () => setCompare('A');
+      document.getElementById('setCompareBBtn').onclick = () => setCompare('B');
+      document.getElementById('exportJsonBtn').onclick = exportJson;
+      document.getElementById('importJsonBtn').onclick = () => document.getElementById('jsonFileInput').click();
+      document.getElementById('jsonFileInput').onchange = importJsonFile;
+      document.getElementById('exportPdfBtn').onclick = () => window.print();
+      document.getElementById('addAgentBtn').onclick = addAgent;
+      document.getElementById('addEdgeBtn').onclick = addEdge;
+    }
+
+    function populateNodeSelects() {
+      const from = document.getElementById('newEdgeFrom');
+      const to = document.getElementById('newEdgeTo');
+      if (!from || !to) return;
+      const options = state.agents.map(a => `<option value="${a.key}">${a.name} (${a.key})</option>`).join('');
+      from.innerHTML = options;
+      to.innerHTML = options;
+    }
+
+    function snapshotState() { return JSON.parse(JSON.stringify(state)); }
+    function saveScenario() {
+      const name = document.getElementById('scenarioName').value.trim();
+      if (!name) { alert('Please enter a scenario name.'); return; }
+      const scenarios = getStoredScenarios();
+      scenarios[name] = snapshotState();
+      setStoredScenarios(scenarios);
+      populateScenarioSelect();
+      document.getElementById('scenarioSelect').value = name;
+    }
+    function loadScenario() {
+      const name = document.getElementById('scenarioSelect').value;
+      if (!name) return;
+      const scenarios = getStoredScenarios();
+      if (!scenarios[name]) return;
+      Object.assign(state, JSON.parse(JSON.stringify(scenarios[name])));
+      rebuildControlHtml(); populateScenarioSelect(); populateNodeSelects(); document.getElementById('scenarioSelect').value = name; renderAll();
+    }
+    function deleteScenario() {
+      const name = document.getElementById('scenarioSelect').value;
+      if (!name) return;
+      const scenarios = getStoredScenarios();
+      delete scenarios[name]; setStoredScenarios(scenarios); populateScenarioSelect();
+    }
+    function setCompare(slot) {
+      const name = document.getElementById('scenarioSelect').value;
+      if (!name) { alert('Select a saved scenario first.'); return; }
+      const scenarios = getStoredScenarios();
+      if (!scenarios[name]) return;
+      const item = { name, state: scenarios[name] };
+      if (slot === 'A') compareA = item; else compareB = item;
+      renderCompare();
+    }
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(snapshotState(), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'seven_agent_simulator_scenario.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    function importJsonFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          Object.assign(state, parsed);
+          rebuildControlHtml(); populateScenarioSelect(); populateNodeSelects(); renderAll();
+        } catch (err) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    function addAgent() {
+      const key = document.getElementById('newAgentKey').value.trim();
+      const name = document.getElementById('newAgentName').value.trim();
+      const d = parseFloat(document.getElementById('newAgentD').value || '0.9');
+      const color = document.getElementById('newAgentColor').value.trim() || '#64748b';
+      if (!key || !name) { alert('Enter an agent key and label.'); return; }
+      if (state.agents.some(a => a.key === key)) { alert('Agent key already exists.'); return; }
+      const nextId = Math.max(...state.agents.map(a => a.id), 0) + 1;
+      state.agents.push({ id: nextId, key, name, short: shortCode(nextId), color, role: 'Custom agent', defaultD: d, core: false });
+      state.D[key] = d;
+      rebuildControlHtml(); populateNodeSelects(); renderAll();
+      document.getElementById('newAgentKey').value = '';
+      document.getElementById('newAgentName').value = '';
+    }
+
+    function removeAgent(key) {
+      const agent = state.agents.find(a => a.key === key);
+      if (!agent || agent.core) { alert('Core agents cannot be removed in this version.'); return; }
+      state.agents = state.agents.filter(a => a.key !== key);
+      delete state.D[key];
+      state.edges = state.edges.filter(e => e.fromKey !== key && e.toKey !== key);
+      rebuildControlHtml(); populateNodeSelects(); renderAll();
+    }
+
+    function addEdge() {
+      const fromKey = document.getElementById('newEdgeFrom').value;
+      const toKey = document.getElementById('newEdgeTo').value;
+      const rho = parseFloat(document.getElementById('newEdgeRho').value || '0.9');
+      if (!fromKey || !toKey) return;
+      if (fromKey === toKey) { alert('Self-loops are not allowed here.'); return; }
+      const label = `${fromKey}→${toKey}`;
+      if (state.edges.some(e => e.label === label)) { alert('Edge already exists.'); return; }
+      state.edges.push({ id: `e${Date.now()}`, fromKey, toKey, rho, label, core: false, optional: false });
+      renderAll();
+    }
+
+    function removeEdge(id) {
+      const edge = state.edges.find(e => e.id === id);
+      if (!edge || edge.core) { alert('Core edges cannot be removed in this version.'); return; }
+      state.edges = state.edges.filter(e => e.id !== id);
+      renderAll();
+    }
+
+    function computeFromState(localState) {
+      const edgesBase = getEdges(false, localState);
+      const edgesLoop = getEdges(true, localState);
+      const agentScores = localState.agents.map(a => ({ name: a.name, d: localState.D[a.key], score: Math.exp(-localState.kPerf * (1 - localState.D[a.key])) }));
+      const map = Object.fromEntries(localState.agents.map((a, i) => [a.key, i]));
+      const baseGraphTerm = edgesBase.reduce((s, e) => s + e.rho * localState.D[e.fromKey] * localState.D[e.toKey], 0);
+      const loopGraphTerm = edgesLoop.reduce((s, e) => s + e.rho * localState.D[e.fromKey] * localState.D[e.toKey], 0);
+      const agentMean = agentScores.reduce((s, a) => s + a.score, 0) / Math.max(1, agentScores.length);
+      const scoreDag = agentMean + localState.lambda * (baseGraphTerm - localState.tau * edgesBase.length);
+      const scoreLoop = agentMean + localState.lambda * (loopGraphTerm - localState.tau * edgesLoop.length - localState.mu);
+      return { scoreDag, scoreLoop, activeScore: localState.loopOn ? scoreLoop : scoreDag };
     }
 
     function monteCarlo(loopEnabled) {
-      const N = 260;
+      const N = 220;
       const dt = 0.06;
       const steps = state.steps;
       const dVec = getDVec();
       const bar = dVec.slice();
-      const KDiag = [0.85, 0.8, 0.75, 0.9, 0.8, state.k6, state.k7];
       const edges = getEdges(loopEnabled);
+      const idxMap = getAgentIndexMap();
+      const kDiag = state.agents.map(a => a.key === 'executor' ? state.k6 : (a.key === 'critic' ? state.k7 : 0.85));
       let particles = Array.from({ length: N }, () => dVec.slice());
       const series = [];
-
       for (let t = 0; t <= steps; t++) {
         const scores = particles.map(p => {
-          const agentTerm = p.map(d => Math.exp(-state.kPerf * (1 - d))).reduce((a, b) => a + b, 0) / 7;
-          const pairTerm = edges.reduce((s, e) => s + e.rho * p[e.from - 1] * p[e.to - 1], 0);
+          const agentTerm = p.map(d => Math.exp(-state.kPerf * (1 - d))).reduce((a, b) => a + b, 0) / Math.max(1, p.length);
+          const pairTerm = edges.reduce((s, e) => s + e.rho * p[idxMap[e.fromKey]] * p[idxMap[e.toKey]], 0);
           return agentTerm + state.lambda * (pairTerm - state.tau * edges.length - (loopEnabled ? state.mu : 0));
         });
         const meanScore = scores.reduce((a, b) => a + b, 0) / N;
-        const meanExec = particles.reduce((s, p) => s + p[5], 0) / N;
-        const meanCrit = particles.reduce((s, p) => s + p[6], 0) / N;
+        const execIndex = idxMap['executor'];
+        const criticIndex = idxMap['critic'];
+        const meanExec = execIndex !== undefined ? particles.reduce((s, p) => s + p[execIndex], 0) / N : 0;
+        const meanCrit = criticIndex !== undefined ? particles.reduce((s, p) => s + p[criticIndex], 0) / N : 0;
         series.push({ step: t, score: meanScore, executor: meanExec, critic: meanCrit });
-
         particles = particles.map(p => {
           const next = p.slice();
-          const incoming = Array.from({ length: 7 }, () => 0);
-          edges.forEach(e => { incoming[e.to - 1] += e.rho * p[e.from - 1]; });
-          for (let i = 0; i < 7; i++) {
-            const drift = -KDiag[i] * (p[i] - bar[i]) + state.lambda * incoming[i];
-            const u1 = Math.random() || 1e-6;
-            const u2 = Math.random() || 1e-6;
+          const incoming = Array.from({ length: state.agents.length }, () => 0);
+          edges.forEach(e => { incoming[idxMap[e.toKey]] += e.rho * p[idxMap[e.fromKey]]; });
+          for (let i = 0; i < state.agents.length; i++) {
+            const drift = -kDiag[i] * (p[i] - bar[i]) + state.lambda * incoming[i];
+            const u1 = Math.random() || 1e-6; const u2 = Math.random() || 1e-6;
             const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
             const noise = state.sigma * Math.sqrt(dt) * z;
             next[i] = clamp01(p[i] + drift * dt + noise);
@@ -694,47 +757,40 @@
       const dVec = getDVec();
       const baseEdges = getEdges(false);
       const loopEdges = getEdges(true);
-      const agentScores = AGENTS.map(a => ({ name: a.name, d: state.D[a.key], score: Math.exp(-state.kPerf * (1 - state.D[a.key])) }));
-      const baseGraphTerm = baseEdges.reduce((s, e) => s + e.rho * state.D[AGENTS[e.from - 1].key] * state.D[AGENTS[e.to - 1].key], 0);
-      const loopGraphTerm = loopEdges.reduce((s, e) => s + e.rho * state.D[AGENTS[e.from - 1].key] * state.D[AGENTS[e.to - 1].key], 0);
-      const agentMean = agentScores.reduce((s, a) => s + a.score, 0) / agentScores.length;
+      const agentScores = state.agents.map(a => ({ name: a.name, d: state.D[a.key], score: Math.exp(-state.kPerf * (1 - state.D[a.key])) }));
+      const agentMean = agentScores.reduce((s, a) => s + a.score, 0) / Math.max(1, agentScores.length);
+      const baseGraphTerm = baseEdges.reduce((s, e) => s + e.rho * state.D[e.fromKey] * state.D[e.toKey], 0);
+      const loopGraphTerm = loopEdges.reduce((s, e) => s + e.rho * state.D[e.fromKey] * state.D[e.toKey], 0);
       const scoreDag = agentMean + state.lambda * (baseGraphTerm - state.tau * baseEdges.length);
       const scoreLoop = agentMean + state.lambda * (loopGraphTerm - state.tau * loopEdges.length - state.mu);
-      const W76 = LOOP_EDGE.rho * state.D.critic * state.D.executor;
-      const structural = W76 > state.tau + state.mu;
-      const dynamic = state.lambda * state.lambda * 0.98 * 0.99 < state.k6 * state.k7;
-
-      const ABase = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => 0));
-      BASE_EDGES.forEach(e => { ABase[e.from - 1][e.to - 1] = e.rho; });
-      const ALoop = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => 0));
-      loopEdges.forEach(e => { ALoop[e.from - 1][e.to - 1] = e.rho; });
-      const rhoBase = spectralRadiusApprox(ABase);
-      const rhoLoop = spectralRadiusApprox(ALoop);
-      const minKi = Math.min(0.85, 0.8, 0.75, 0.9, 0.8, state.k6, state.k7);
-
+      const loopEdgesOnly = state.edges.filter(e => e.optional);
+      const loopWeight = loopEdgesOnly.reduce((s, e) => s + e.rho * state.D[e.fromKey] * state.D[e.toKey], 0);
+      const structural = loopWeight > state.tau + state.mu;
+      const baseAdj = buildAdjacency(baseEdges); const loopAdj = buildAdjacency(loopEdges);
+      const weightedBaseAdj = buildWeighted(baseEdges, dVec); const weightedLoopAdj = buildWeighted(loopEdges, dVec);
+      const rhoBase = spectralRadiusApprox(baseEdges.length ? weightedBaseAdj.map(row => row.map(v => v === 0 ? 0 : Math.min(1, v))) : [[0]]);
+      const rhoLoop = spectralRadiusApprox(loopEdges.length ? weightedLoopAdj.map(row => row.map(v => v === 0 ? 0 : Math.min(1, v))) : [[0]]);
+      const minKi = Math.min(0.75, state.k6, state.k7);
+      const hasExecutor = state.agents.some(a => a.key === 'executor');
+      const hasCritic = state.agents.some(a => a.key === 'critic');
+      const execCritForward = state.edges.find(e => e.fromKey === 'executor' && e.toKey === 'critic');
+      const execCritBack = state.edges.find(e => e.fromKey === 'critic' && e.toKey === 'executor');
+      const dynamic = hasExecutor && hasCritic && execCritForward && execCritBack
+        ? (state.lambda * state.lambda * execCritForward.rho * execCritBack.rho < state.k6 * state.k7)
+        : true;
       return {
-        dVec,
-        baseEdges,
-        loopEdges,
-        agentScores,
-        scoreDag,
-        scoreLoop,
-        W76,
-        structural,
-        dynamic,
-        rhoBase,
-        rhoLoop,
-        minKi,
+        dVec, baseEdges, loopEdges, agentScores, scoreDag, scoreLoop, loopWeight, structural, dynamic, rhoBase, rhoLoop, minKi,
         stableBase: state.lambda * rhoBase < minKi,
         stableLoop: state.lambda * rhoLoop < minKi,
-        binaryDag: buildAdjacency(baseEdges),
-        binaryLoop: buildAdjacency(loopEdges),
-        weightedDag: buildWeighted(baseEdges, dVec),
-        weightedLoop: buildWeighted(loopEdges, dVec),
+        binaryDag: baseAdj,
+        binaryLoop: loopAdj,
+        weightedDag: weightedBaseAdj,
+        weightedLoop: weightedLoopAdj,
       };
     }
 
     function tableHTML(matrix, decimals = 0) {
+      if (!matrix.length) return '<div class="subtle">No matrix available.</div>';
       let html = '<table><thead><tr><th></th>';
       for (let j = 0; j < matrix[0].length; j++) html += `<th>${j + 1}</th>`;
       html += '</tr></thead><tbody>';
@@ -755,73 +811,33 @@
       const chartW = w - pad.left - pad.right;
       const chartH = h - pad.top - pad.bottom;
       const flat = datasets.flatMap(d => d.data);
+      if (!flat.length) return;
       let minY = options.minY ?? Math.min(...flat);
       let maxY = options.maxY ?? Math.max(...flat);
       if (!Number.isFinite(minY) || !Number.isFinite(maxY)) return;
       if (maxY === minY) { maxY += 1; minY -= 1; }
       const yPad = (maxY - minY) * 0.08;
       minY -= yPad; maxY += yPad;
-
-      ctx.fillStyle = 'rgba(2,6,23,0.45)';
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.strokeStyle = colors.grid;
-      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(2,6,23,0.45)'; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = colors.grid; ctx.lineWidth = 1;
       const yTicks = 5;
-      for (let i = 0; i <= yTicks; i++) {
-        const y = pad.top + (chartH / yTicks) * i;
-        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
-      }
-      const xTicks = Math.min(6, labels.length - 1);
-      for (let i = 0; i <= xTicks; i++) {
-        const x = pad.left + (chartW / xTicks) * i;
-        ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, h - pad.bottom); ctx.stroke();
-      }
-
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, h - pad.bottom); ctx.lineTo(w - pad.right, h - pad.bottom); ctx.stroke();
-
-      ctx.font = '12px Inter, sans-serif';
-      ctx.fillStyle = colors.axis;
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      for (let i = 0; i <= yTicks; i++) {
-        const val = maxY - ((maxY - minY) / yTicks) * i;
-        const y = pad.top + (chartH / yTicks) * i;
-        ctx.fillText(val.toFixed(2), pad.left - 8, y);
-      }
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      for (let i = 0; i <= xTicks; i++) {
-        const idx = Math.round((labels.length - 1) * (i / xTicks));
-        const x = pad.left + (chartW / xTicks) * i;
-        ctx.fillText(String(labels[idx]), x, h - pad.bottom + 10);
-      }
-
+      for (let i = 0; i <= yTicks; i++) { const y = pad.top + (chartH / yTicks) * i; ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke(); }
+      const xTicks = Math.min(6, labels.length - 1 || 1);
+      for (let i = 0; i <= xTicks; i++) { const x = pad.left + (chartW / xTicks) * i; ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, h - pad.bottom); ctx.stroke(); }
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, h - pad.bottom); ctx.lineTo(w - pad.right, h - pad.bottom); ctx.stroke();
+      ctx.font = '12px Inter, sans-serif'; ctx.fillStyle = colors.axis; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let i = 0; i <= yTicks; i++) { const val = maxY - ((maxY - minY) / yTicks) * i; const y = pad.top + (chartH / yTicks) * i; ctx.fillText(val.toFixed(2), pad.left - 8, y); }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let i = 0; i <= xTicks; i++) { const idx = Math.round((labels.length - 1) * (i / xTicks)); const x = pad.left + (chartW / xTicks) * i; ctx.fillText(String(labels[idx] ?? 0), x, h - pad.bottom + 10); }
       const mapX = i => pad.left + (i / Math.max(1, labels.length - 1)) * chartW;
       const mapY = v => pad.top + (1 - (v - minY) / (maxY - minY)) * chartH;
-
       datasets.forEach(ds => {
-        ctx.strokeStyle = ds.color;
-        ctx.lineWidth = ds.width || 2.5;
-        ctx.beginPath();
-        ds.data.forEach((v, i) => {
-          const x = mapX(i), y = mapY(v);
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
+        ctx.strokeStyle = ds.color; ctx.lineWidth = ds.width || 2.5; ctx.beginPath();
+        ds.data.forEach((v, i) => { const x = mapX(i), y = mapY(v); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
         ctx.stroke();
       });
-
       let lx = pad.left + 6, ly = pad.top + 6;
-      datasets.forEach(ds => {
-        ctx.fillStyle = ds.color;
-        ctx.fillRect(lx, ly + 4, 14, 3);
-        ctx.fillStyle = colors.text;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        ctx.fillText(ds.label, lx + 22, ly - 2);
-        ly += 18;
-      });
+      datasets.forEach(ds => { ctx.fillStyle = ds.color; ctx.fillRect(lx, ly + 4, 14, 3); ctx.fillStyle = colors.text; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(ds.label, lx + 22, ly - 2); ly += 18; });
     }
 
     function drawBarChart(canvas, labels, values, color) {
@@ -832,137 +848,197 @@
       const chartW = w - pad.left - pad.right;
       const chartH = h - pad.top - pad.bottom;
       const maxY = Math.max(...values, 1);
-
-      ctx.fillStyle = 'rgba(2,6,23,0.45)';
-      ctx.fillRect(0,0,w,h);
+      ctx.fillStyle = 'rgba(2,6,23,0.45)'; ctx.fillRect(0,0,w,h);
       ctx.strokeStyle = colors.grid;
-      for (let i = 0; i <= 5; i++) {
-        const y = pad.top + (chartH / 5) * i;
-        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
-      }
-
-      ctx.font = '12px Inter, sans-serif';
-      ctx.fillStyle = colors.axis;
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      for (let i = 0; i <= 5; i++) {
-        const val = maxY - (maxY / 5) * i;
-        const y = pad.top + (chartH / 5) * i;
-        ctx.fillText(val.toFixed(2), pad.left - 8, y);
-      }
-
-      const barGap = 18;
-      const barW = Math.max(24, (chartW - barGap * (labels.length + 1)) / labels.length);
+      for (let i = 0; i <= 5; i++) { const y = pad.top + (chartH / 5) * i; ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke(); }
+      ctx.font = '12px Inter, sans-serif'; ctx.fillStyle = colors.axis; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let i = 0; i <= 5; i++) { const val = maxY - (maxY / 5) * i; const y = pad.top + (chartH / 5) * i; ctx.fillText(val.toFixed(2), pad.left - 8, y); }
+      const barGap = 18; const barW = Math.max(24, (chartW - barGap * (labels.length + 1)) / Math.max(1, labels.length));
       labels.forEach((label, i) => {
-        const x = pad.left + barGap + i * (barW + barGap);
-        const bh = (values[i] / maxY) * chartH;
-        const y = pad.top + chartH - bh;
-        const grad = ctx.createLinearGradient(0, y, 0, y + bh);
-        grad.addColorStop(0, color);
-        grad.addColorStop(1, 'rgba(96,165,250,0.45)');
-        ctx.fillStyle = grad;
+        const x = pad.left + barGap + i * (barW + barGap); const bh = (values[i] / maxY) * chartH; const y = pad.top + chartH - bh;
+        const grad = ctx.createLinearGradient(0, y, 0, y + bh); grad.addColorStop(0, color); grad.addColorStop(1, 'rgba(96,165,250,0.45)'); ctx.fillStyle = grad;
         roundRect(ctx, x, y, barW, bh, 10, true, false);
-        ctx.fillStyle = colors.axis;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.save();
-        ctx.translate(x + barW / 2, h - pad.bottom + 12);
-        ctx.rotate(-0.35);
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
+        ctx.fillStyle = colors.axis; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.save(); ctx.translate(x + barW / 2, h - pad.bottom + 12); ctx.rotate(-0.35); ctx.fillText(label, 0, 0); ctx.restore();
       });
     }
 
     function roundRect(ctx, x, y, w, h, r, fill, stroke) {
-      if (w < 2 * r) r = w / 2;
-      if (h < 2 * r) r = h / 2;
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-      if (fill) ctx.fill();
-      if (stroke) ctx.stroke();
+      if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2;
+      ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+      if (fill) ctx.fill(); if (stroke) ctx.stroke();
+    }
+
+    function computeNodePositions() {
+      const n = state.agents.length;
+      const positions = {};
+      const cols = Math.ceil(Math.sqrt(n));
+      const rows = Math.ceil(n / cols);
+      const width = 760;
+      const height = Math.max(420, 120 * rows + 80);
+      state.agents.forEach((agent, idx) => {
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        const x = 90 + col * ((width - 180) / Math.max(1, cols - 1 || 1));
+        const y = 80 + row * ((height - 140) / Math.max(1, rows - 1 || 1));
+        positions[agent.key] = [x, y];
+      });
+      return { positions, height };
     }
 
     function renderArchitecture(loopOn) {
-      const nodePos = { 1:[84,72], 2:[226,72], 3:[122,184], 4:[226,184], 5:[330,184], 6:[226,292], 7:[226,344] };
-      const edgesEl = document.getElementById('archEdges');
-      const nodesEl = document.getElementById('archNodes');
-      edgesEl.innerHTML = ''; nodesEl.innerHTML = '';
-      const edges = [[1,2,false,false],[2,3,false,false],[2,4,false,false],[2,5,false,false],[3,6,true,false],[4,6,false,false],[5,6,true,false],[6,7,false,false]];
-      if (loopOn) edges.push([7,6,true,true]);
-
-      edges.forEach(([from,to,dashed,green]) => {
-        const [x1,y1] = nodePos[from], [x2,y2] = nodePos[to];
-        const dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy) || 1;
-        const ux = dx/len, uy = dy/len;
-        const sx = x1 + ux * 30, sy = y1 + uy * 30;
-        const ex = x2 - ux * 30, ey = y2 - uy * 30;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', sx); line.setAttribute('y1', sy); line.setAttribute('x2', ex); line.setAttribute('y2', ey);
-        line.setAttribute('stroke', green ? '#34d399' : '#94a3b8');
-        line.setAttribute('stroke-width', '2.4');
-        if (dashed) line.setAttribute('stroke-dasharray', '6 6');
-        line.setAttribute('marker-end', green ? 'url(#arrowGreen)' : 'url(#arrowDefault)');
-        edgesEl.appendChild(line);
+      const { positions, height } = computeNodePositions();
+      const svg = document.querySelector('.arch-wrap svg');
+      svg.setAttribute('viewBox', `0 0 800 ${height}`);
+      const edgesEl = document.getElementById('archEdges'); const nodesEl = document.getElementById('archNodes'); edgesEl.innerHTML = ''; nodesEl.innerHTML = '';
+      const edges = getEdges(loopOn);
+      edges.forEach(e => {
+        const [x1,y1] = positions[e.fromKey], [x2,y2] = positions[e.toKey]; const dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy) || 1; const ux = dx/len, uy = dy/len;
+        const sx = x1 + ux * 30, sy = y1 + uy * 30; const ex = x2 - ux * 30, ey = y2 - uy * 30;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); line.setAttribute('x1', sx); line.setAttribute('y1', sy); line.setAttribute('x2', ex); line.setAttribute('y2', ey); line.setAttribute('stroke', e.optional ? '#34d399' : '#94a3b8'); line.setAttribute('stroke-width', '2.4'); if (e.optional) line.setAttribute('stroke-dasharray', '6 6'); line.setAttribute('marker-end', e.optional ? 'url(#arrowGreen)' : 'url(#arrowDefault)'); edgesEl.appendChild(line);
       });
-
-      AGENTS.forEach(agent => {
-        const [x, y] = nodePos[agent.id];
-        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        halo.setAttribute('cx', x); halo.setAttribute('cy', y); halo.setAttribute('r', 34); halo.setAttribute('fill', agent.color); halo.setAttribute('opacity', '0.10');
-        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 27); c.setAttribute('fill', agent.color);
-        const c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c2.setAttribute('cx', x); c2.setAttribute('cy', y); c2.setAttribute('r', 29); c2.setAttribute('fill', 'none'); c2.setAttribute('stroke', 'rgba(255,255,255,0.18)');
-        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        t.setAttribute('x', x); t.setAttribute('y', y + 5); t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', 'white'); t.setAttribute('font-size', '12'); t.setAttribute('font-weight', '700'); t.textContent = String(agent.id);
-        const s = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        s.setAttribute('x', x); s.setAttribute('y', y + 48); s.setAttribute('text-anchor', 'middle'); s.setAttribute('fill', '#d4def0'); s.setAttribute('font-size', '11'); s.textContent = agent.name;
+      state.agents.forEach((agent, idx) => {
+        const [x, y] = positions[agent.key]; const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); halo.setAttribute('cx', x); halo.setAttribute('cy', y); halo.setAttribute('r', 34); halo.setAttribute('fill', agent.color); halo.setAttribute('opacity', '0.10');
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 27); c.setAttribute('fill', agent.color);
+        const c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c2.setAttribute('cx', x); c2.setAttribute('cy', y); c2.setAttribute('r', 29); c2.setAttribute('fill', 'none'); c2.setAttribute('stroke', 'rgba(255,255,255,0.18)');
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('x', x); t.setAttribute('y', y + 5); t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', 'white'); t.setAttribute('font-size', '12'); t.setAttribute('font-weight', '700'); t.textContent = agent.short || shortCode(idx + 1);
+        const s = document.createElementNS('http://www.w3.org/2000/svg', 'text'); s.setAttribute('x', x); s.setAttribute('y', y + 48); s.setAttribute('text-anchor', 'middle'); s.setAttribute('fill', '#d4def0'); s.setAttribute('font-size', '11'); s.textContent = agent.name;
         g.appendChild(halo); g.appendChild(c); g.appendChild(c2); g.appendChild(t); g.appendChild(s); nodesEl.appendChild(g);
       });
     }
 
+    function buildResultSummary(c) {
+      const activeScore = state.loopOn ? c.scoreLoop : c.scoreDag;
+      const baselineScore = c.scoreDag; const altScore = c.scoreLoop;
+      const improvementPct = baselineScore !== 0 ? ((altScore - baselineScore) / Math.abs(baselineScore)) * 100 : 0;
+      const errorReductionPct = Math.max(0, Math.min(95, (c.structural && c.dynamic ? Math.max(0, improvementPct) * 0.7 : 0)));
+      const loopRisk = !c.dynamic || !c.stableLoop ? 'HIGH' : ((state.loopOn && (!c.structural || c.scoreLoop <= c.scoreDag)) ? 'MEDIUM' : 'LOW');
+      const execKey = state.agents.find(a => a.key === 'executor')?.key;
+      const criticKey = state.agents.find(a => a.key === 'critic')?.key;
+      const upstreamKeys = state.edges.filter(e => e.toKey === 'executor' && !e.optional).map(e => e.fromKey);
+      const executorBottleneck = execKey ? ((state.D[execKey] < Math.min(...(upstreamKeys.map(k => state.D[k]).filter(v => v !== undefined).concat([1])))) || state.D[execKey] < 0.9) : false;
+      const criticWeak = criticKey ? state.D[criticKey] < 0.9 : false;
+      return { activeScore, improvementPct, errorReductionPct, loopRisk, executorBottleneck, criticWeak };
+    }
+
+    function renderCompare() {
+      const a = document.getElementById('compareA'); const b = document.getElementById('compareB');
+      if (!compareA) a.innerHTML = 'Not set'; else {
+        const c = computeFromState(compareA.state);
+        a.innerHTML = `<strong>${compareA.name}</strong><div class="subtle" style="margin-top:6px;">Active score: ${fmt(c.activeScore,3)}</div><div class="subtle">Baseline: ${fmt(c.scoreDag,3)}</div><div class="subtle">Loop: ${fmt(c.scoreLoop,3)}</div>`;
+      }
+      if (!compareB) b.innerHTML = 'Not set'; else {
+        const c = computeFromState(compareB.state);
+        b.innerHTML = `<strong>${compareB.name}</strong><div class="subtle" style="margin-top:6px;">Active score: ${fmt(c.activeScore,3)}</div><div class="subtle">Baseline: ${fmt(c.scoreDag,3)}</div><div class="subtle">Loop: ${fmt(c.scoreLoop,3)}</div>`;
+      }
+      if (compareA && compareB) {
+        const ca = computeFromState(compareA.state); const cb = computeFromState(compareB.state);
+        a.innerHTML += `<div class="signal-pill ${ca.activeScore >= cb.activeScore ? 'good' : 'warn'}" style="margin-top:10px;">Δ vs B: ${ca.activeScore >= cb.activeScore ? '+' : ''}${fmt((ca.activeScore - cb.activeScore),3)}</div>`;
+        b.innerHTML += `<div class="signal-pill ${cb.activeScore >= ca.activeScore ? 'good' : 'warn'}" style="margin-top:10px;">Δ vs A: ${cb.activeScore >= ca.activeScore ? '+' : ''}${fmt((cb.activeScore - ca.activeScore),3)}</div>`;
+      }
+    }
+
+    function renderAgentAdmin() {
+      document.getElementById('agentAdminGrid').innerHTML = state.agents.map(a => `
+        <div class="agent-admin-card">
+          <div class="edge-top"><strong>${a.name}</strong>${a.core ? '<span class="status-pass">core</span>' : `<button class="btn danger" data-remove-agent="${a.key}">Remove</button>`}</div>
+          <div class="mini-grid">
+            <div><div class="subtle" style="margin-bottom:6px;">Key</div><input type="text" value="${a.key}" readonly></div>
+            <div><div class="subtle" style="margin-bottom:6px;">Color</div><input type="text" value="${a.color}" data-agent-color="${a.key}"></div>
+          </div>
+        </div>
+      `).join('');
+      document.querySelectorAll('[data-remove-agent]').forEach(btn => btn.onclick = () => removeAgent(btn.getAttribute('data-remove-agent')));
+      document.querySelectorAll('[data-agent-color]').forEach(input => input.oninput = e => {
+        const key = e.target.getAttribute('data-agent-color');
+        const agent = state.agents.find(a => a.key === key);
+        if (agent) { agent.color = e.target.value; renderAll(); }
+      });
+    }
+
     function renderAll() {
-      const c = compute();
+      const c = compute(); const r = buildResultSummary(c);
       document.getElementById('scoreDag').textContent = fmt(c.scoreDag, 4);
       document.getElementById('scoreLoop').textContent = fmt(c.scoreLoop, 4);
       document.getElementById('scoreDiff').textContent = fmt(c.scoreLoop - c.scoreDag, 4);
-      document.getElementById('thresholdGap').textContent = fmt(c.W76 - (state.tau + state.mu), 4);
+      document.getElementById('thresholdGap').textContent = fmt(c.loopWeight - (state.tau + state.mu), 4);
+      document.getElementById('resultArchitectureScore').textContent = fmt(r.activeScore, 3);
+      document.getElementById('resultArchitectureLabel').textContent = `Your architecture score: ${fmt(r.activeScore, 3)}`;
+
+      document.getElementById('riskFlags').innerHTML = [
+        `<div class="signal-pill ${r.loopRisk === 'HIGH' ? 'bad' : (r.loopRisk === 'MEDIUM' ? 'warn' : 'good')}">Loop instability risk: ${r.loopRisk}<span class="subline">Dynamic rule ${c.dynamic ? 'passes' : 'fails'}, spectral loop bound ${c.stableLoop ? 'passes' : 'fails'}.</span></div>`,
+        `<div class="signal-pill ${r.executorBottleneck ? 'warn' : 'good'}">Executor bottleneck detected: ${r.executorBottleneck ? 'YES' : 'NO'}<span class="subline">Executor routing may be overloaded relative to upstream integrity.</span></div>`,
+        `<div class="signal-pill ${r.criticWeak ? 'warn' : 'good'}">Critic verification strength: ${r.criticWeak ? 'WEAKENING' : 'HEALTHY'}<span class="subline">Critic reliability affects safe use of optional loop edges.</span></div>`
+      ].join('');
+
+      const recs = [];
+      if (c.scoreLoop > c.scoreDag && c.structural && c.dynamic) recs.push(`<div class="signal-pill good">Keep optional loop edges enabled<span class="subline">Optional loop edges are improving score and remain admissible.</span></div>`);
+      else if (state.loopOn && (!c.dynamic || !c.stableLoop)) recs.push(`<div class="signal-pill bad">Disable optional loop edges<span class="subline">Current loop routing violates dynamic or spectral stability limits.</span></div>`);
+      else recs.push(`<div class="signal-pill warn">Keep baseline graph<span class="subline">The acyclic structure is currently the safer default.</span></div>`);
+      if (r.executorBottleneck) recs.push(`<div class="signal-pill warn">Raise Executor reliability<span class="subline">Improve Executor D before adding more downstream complexity.</span></div>`);
+      if (r.criticWeak) recs.push(`<div class="signal-pill warn">Strengthen Critic before scaling loops<span class="subline">Verification quality is too low for aggressive feedback routing.</span></div>`);
+      document.getElementById('recommendations').innerHTML = recs.join('');
+
+      document.getElementById('roiTranslation').innerHTML = [
+        `<div class="signal-pill ${r.improvementPct >= 0 ? 'good' : 'bad'}">Expected improvement: ${r.improvementPct >= 0 ? '+' : ''}${fmt(r.improvementPct,1)}% response stability<span class="subline">Estimated from loop-enabled score vs baseline score.</span></div>`,
+        `<div class="signal-pill ${r.errorReductionPct > 0 ? 'good' : 'warn'}">${r.errorReductionPct > 0 ? '-' : ''}${fmt(r.errorReductionPct,1)}% error propagation<span class="subline">Heuristic translation from structural gain and stability margin.</span></div>`,
+        `<div class="signal-pill ${r.activeScore > 3 ? 'good' : 'warn'}">Deployment readiness: ${r.activeScore > 3 ? 'HIGHER' : 'LIMITED'}<span class="subline">Current score suggests ${r.activeScore > 3 ? 'a stronger production candidate' : 'more tuning before production'}.</span></div>`
+      ].join('');
 
       document.getElementById('rules').innerHTML = `
-        <div class="rule"><div class="rule-top"><div><div class="rule-title">Structural condition</div><div class="rule-formula">W₇₆ > τ + μ</div><div class="rule-detail">${fmt(c.W76, 4)} > ${fmt(state.tau + state.mu, 4)}</div></div><div class="${c.structural ? 'status-pass' : 'status-fail'}">${c.structural ? 'pass' : 'fail'}</div></div></div>
-        <div class="rule"><div class="rule-top"><div><div class="rule-title">Dynamic loop condition</div><div class="rule-formula">λ² a₆₇a₇₆ρ₆₇ρ₇₆ < k₆k₇</div><div class="rule-detail">${fmt(state.lambda * state.lambda * 0.98 * 0.99, 4)} < ${fmt(state.k6 * state.k7, 4)}</div></div><div class="${c.dynamic ? 'status-pass' : 'status-fail'}">${c.dynamic ? 'pass' : 'fail'}</div></div></div>
-        <div class="rule"><div class="rule-top"><div><div class="rule-title">Base spectral bound</div><div class="rule-formula">λρ(Aρ) < min kᵢ</div><div class="rule-detail">${fmt(state.lambda * c.rhoBase, 4)} < ${fmt(c.minKi, 4)}</div></div><div class="${c.stableBase ? 'status-pass' : 'status-fail'}">${c.stableBase ? 'pass' : 'fail'}</div></div></div>
-        <div class="rule"><div class="rule-top"><div><div class="rule-title">Loop spectral bound</div><div class="rule-formula">λρ(Aρ,loop) < min kᵢ</div><div class="rule-detail">${fmt(state.lambda * c.rhoLoop, 4)} < ${fmt(c.minKi, 4)}</div></div><div class="${c.stableLoop ? 'status-pass' : 'status-fail'}">${c.stableLoop ? 'pass' : 'fail'}</div></div></div>
+        <div class="rule"><div class="rule-top"><div><div class="rule-title">Structural condition</div><div class="rule-formula">W_optional > τ + μ</div><div class="rule-detail">${fmt(c.loopWeight, 4)} > ${fmt(state.tau + state.mu, 4)}</div></div><div class="${c.structural ? 'status-pass' : 'status-fail'}">${c.structural ? 'pass' : 'fail'}</div></div></div>
+        <div class="rule"><div class="rule-top"><div><div class="rule-title">Dynamic loop condition</div><div class="rule-formula">λ² ρ_forward ρ_back < k₆k₇</div><div class="rule-detail">Optional loop stability check on executor / critic edges when present.</div></div><div class="${c.dynamic ? 'status-pass' : 'status-fail'}">${c.dynamic ? 'pass' : 'fail'}</div></div></div>
+        <div class="rule"><div class="rule-top"><div><div class="rule-title">Base spectral bound</div><div class="rule-formula">λρ(A) < min kᵢ</div><div class="rule-detail">${fmt(state.lambda * c.rhoBase, 4)} < ${fmt(c.minKi, 4)}</div></div><div class="${c.stableBase ? 'status-pass' : 'status-fail'}">${c.stableBase ? 'pass' : 'fail'}</div></div></div>
+        <div class="rule"><div class="rule-top"><div><div class="rule-title">Loop spectral bound</div><div class="rule-formula">λρ(A_loop) < min kᵢ</div><div class="rule-detail">${fmt(state.lambda * c.rhoLoop, 4)} < ${fmt(c.minKi, 4)}</div></div><div class="${c.stableLoop ? 'status-pass' : 'status-fail'}">${c.stableLoop ? 'pass' : 'fail'}</div></div></div>
       `;
 
       renderArchitecture(state.loopOn);
+      renderCompare();
+      renderAgentAdmin();
+      populateNodeSelects();
 
-      const dagSeries = monteCarlo(false);
-      const loopSeries = monteCarlo(true);
+      const dagSeries = monteCarlo(false); const loopSeries = monteCarlo(true);
       drawLineChart(document.getElementById('scoreChart'), dagSeries.map(x => x.step), [
-        { label: 'Baseline DAG', data: dagSeries.map(x => x.score), color: colors.blue, width: 2.6 },
-        { label: 'DAG + local loop', data: loopSeries.map(x => x.score), color: colors.green, width: 2.6 }
+        { label: 'Baseline graph', data: dagSeries.map(x => x.score), color: colors.blue, width: 2.6 },
+        { label: 'Loop-enabled graph', data: loopSeries.map(x => x.score), color: colors.green, width: 2.6 }
       ]);
       drawLineChart(document.getElementById('integrityChart'), dagSeries.map(x => x.step), [
-        { label: 'Executor, DAG', data: dagSeries.map(x => x.executor), color: colors.cyan, width: 2.1 },
-        { label: 'Executor, loop', data: loopSeries.map(x => x.executor), color: colors.green, width: 2.1 },
-        { label: 'Critic, DAG', data: dagSeries.map(x => x.critic), color: colors.violet, width: 2.1 },
-        { label: 'Critic, loop', data: loopSeries.map(x => x.critic), color: colors.pink, width: 2.1 }
+        { label: 'Executor / baseline', data: dagSeries.map(x => x.executor), color: colors.cyan, width: 2.1 },
+        { label: 'Executor / loop', data: loopSeries.map(x => x.executor), color: colors.green, width: 2.1 },
+        { label: 'Critic / baseline', data: dagSeries.map(x => x.critic), color: colors.violet, width: 2.1 },
+        { label: 'Critic / loop', data: loopSeries.map(x => x.critic), color: colors.pink, width: 2.1 }
       ], { minY: 0.6, maxY: 1.0 });
       drawBarChart(document.getElementById('agentChart'), c.agentScores.map(x => x.name), c.agentScores.map(x => x.score), colors.blue);
 
-      const activeEdges = getEdges(state.loopOn);
-      document.getElementById('edgeGrid').innerHTML = [...BASE_EDGES, LOOP_EDGE].map(e => {
-        const active = activeEdges.some(a => a.label === e.label);
-        const w = e.rho * state.D[AGENTS[e.from - 1].key] * state.D[AGENTS[e.to - 1].key];
-        return `<div class="edge-card ${active ? '' : 'inactive'}"><div style="display:flex;justify-content:space-between;gap:10px;"><strong>${e.label}</strong><span class="${active ? 'status-pass' : 'subtle'}" style="padding:4px 8px;">${active ? 'active' : 'inactive'}</span></div><div class="subtle" style="margin-top:8px;">ρ = ${fmt(e.rho, 2)}</div><div class="subtle">W = ${fmt(w, 4)}</div></div>`;
+      document.getElementById('edgeGrid').innerHTML = state.edges.map(e => {
+        const active = getEdges(state.loopOn).some(a => a.id === e.id);
+        const rho = e.rho;
+        const w = (state.D[e.fromKey] ?? 0.9) * (state.D[e.toKey] ?? 0.9) * rho;
+        const fromAgent = state.agents.find(a => a.key === e.fromKey);
+        const toAgent = state.agents.find(a => a.key === e.toKey);
+        return `<div class="edge-card ${active ? '' : 'inactive'}">
+          <div class="edge-top"><strong>${fromAgent?.name || e.fromKey} → ${toAgent?.name || e.toKey}</strong><div>${e.core ? '<span class="status-pass">core</span>' : `<button class="btn danger" data-remove-edge="${e.id}">Remove</button>`}</div></div>
+          <div class="triple-grid">
+            <div><div class="subtle" style="margin-bottom:6px;">From</div><input type="text" value="${fromAgent?.name || e.fromKey}" readonly></div>
+            <div><div class="subtle" style="margin-bottom:6px;">To</div><input type="text" value="${toAgent?.name || e.toKey}" readonly></div>
+            <div><div class="subtle" style="margin-bottom:6px;">ρ weight</div><input type="number" min="-1" max="1" step="0.01" value="${rho}" data-edge-rho="${e.id}"></div>
+          </div>
+          <div class="mini-grid" style="margin-top:10px;">
+            <div><label class="subtle"><input type="checkbox" data-edge-optional="${e.id}" ${e.optional ? 'checked' : ''}> optional loop edge</label></div>
+            <div class="subtle">W = ${fmt(w, 4)}</div>
+          </div>
+        </div>`;
       }).join('');
+
+      document.querySelectorAll('[data-edge-rho]').forEach(input => input.oninput = e => {
+        const edge = state.edges.find(x => x.id === e.target.getAttribute('data-edge-rho')); if (edge) { edge.rho = parseFloat(e.target.value); renderAll(); }
+      });
+      document.querySelectorAll('[data-edge-optional]').forEach(input => input.onchange = e => {
+        const edge = state.edges.find(x => x.id === e.target.getAttribute('data-edge-optional')); if (edge) { edge.optional = e.target.checked; renderAll(); }
+      });
+      document.querySelectorAll('[data-remove-edge]').forEach(btn => btn.onclick = () => removeEdge(btn.getAttribute('data-remove-edge')));
+
+      state.agents.forEach(agent => { const el = document.getElementById(`agent_name_${agent.key}`); if (el) el.textContent = agent.name; });
 
       document.getElementById('matrixBinaryDag').innerHTML = tableHTML(c.binaryDag);
       document.getElementById('matrixWeightedDag').innerHTML = tableHTML(c.weightedDag, 4);
@@ -979,8 +1055,12 @@
       });
     });
 
-    buildControls();
+    rebuildControlHtml();
+    bindGlobalButtons();
+    populateScenarioSelect();
+    populateNodeSelects();
     renderAll();
   </script>
+
 </body>
 </html>
