@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coherent Agents, AI Architecture Coherence Simulator</title>
+  <title>Coherent Agents, Functional Simulator</title>
   <style>
     :root {
       --navy: #081f4d;
@@ -17,479 +17,100 @@
       --muted: #5f7091;
       --good: #18a46b;
       --warn: #d5961a;
+      --bad: #c94c4c;
       --shadow: 0 14px 34px rgba(10, 31, 77, 0.08);
       --radius-xl: 18px;
       --radius-lg: 14px;
       --radius-md: 10px;
     }
-
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; font-family: Inter, Arial, sans-serif; color: var(--text); background: var(--bg); }
     body { min-height: 100vh; }
-
-    .app {
-      display: grid;
-      grid-template-columns: 395px 1fr;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      background: #fff;
-      border-right: 1px solid var(--line);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand {
-      padding: 22px 24px 14px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo-mark {
-      width: 84px;
-      height: 84px;
-      border: 3px solid var(--navy-2);
-      border-radius: 50%;
-      position: relative;
-      flex: 0 0 auto;
-    }
-
+    .app { display: grid; grid-template-columns: 395px 1fr; min-height: 100vh; }
+    .sidebar { background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+    .brand { padding: 22px 24px 14px; border-bottom: 1px solid var(--line); }
+    .brand-row { display: flex; align-items: center; gap: 14px; }
+    .logo-mark { width: 84px; height: 84px; border: 3px solid var(--navy-2); border-radius: 50%; position: relative; flex: 0 0 auto; }
     .logo-mark svg { width: 100%; height: 100%; display: block; }
-
-    .brand-wordmark {
-      line-height: 0.9;
-      letter-spacing: 0.14em;
-      color: var(--navy);
-    }
-
-    .brand-wordmark .top {
-      font-size: 40px;
-      font-weight: 600;
-    }
-
-    .brand-wordmark .bottom {
-      font-size: 28px;
-      font-weight: 400;
-      margin-top: 10px;
-    }
-
-    .tagline {
-      margin-top: 12px;
-      font-size: 14px;
-      letter-spacing: 0.18em;
-      color: var(--blue);
-    }
-
-    .side-section {
-      margin: 14px 16px 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background: #fff;
-      box-shadow: var(--shadow);
-    }
-
-    .side-title {
-      background: var(--navy);
-      color: #fff;
-      padding: 16px;
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      letter-spacing: 0.02em;
-    }
-
-    .side-body {
-      padding: 18px 16px 16px;
-    }
-
+    .brand-wordmark { line-height: 0.9; letter-spacing: 0.14em; color: var(--navy); }
+    .brand-wordmark .top { font-size: 40px; font-weight: 600; }
+    .brand-wordmark .bottom { font-size: 28px; font-weight: 400; margin-top: 10px; }
+    .tagline { margin-top: 12px; font-size: 14px; letter-spacing: 0.18em; color: var(--blue); }
+    .side-section { margin: 14px 16px 0; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: #fff; box-shadow: var(--shadow); }
+    .side-title { background: var(--navy); color: #fff; padding: 16px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.02em; }
+    .side-body { padding: 18px 16px 16px; }
     .control-group { margin-bottom: 16px; }
-
-    .control-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-
-    select, input[type="number"], input[type="text"] {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 14px;
-      color: var(--text);
-      background: #fff;
-    }
-
-    .slider-row {
-      display: grid;
-      grid-template-columns: 56px 1fr;
-      gap: 12px;
-      align-items: center;
-    }
-
+    .control-label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    select, input[type="number"], input[type="text"], input[type="color"] { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--text); background: #fff; }
+    .slider-row { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; }
     input[type="range"] { width: 100%; accent-color: var(--blue); }
-
-    .switch {
-      width: 40px;
-      height: 22px;
-      background: var(--blue);
-      border-radius: 99px;
-      position: relative;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
-    }
-
-    .switch::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 21px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .divider {
-      border-top: 1px solid var(--line);
-      margin: 14px 0;
-    }
-
-    .agent-row {
-      display: grid;
-      grid-template-columns: 28px 1fr 50px 1fr;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .agent-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
+    .switch { width: 40px; height: 22px; background: #d0d8e8; border-radius: 99px; position: relative; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); cursor: pointer; }
+    .switch.on { background: var(--blue); }
+    .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: transform .15s ease; }
+    .switch.on::after { transform: translateX(18px); }
+    .divider { border-top: 1px solid var(--line); margin: 14px 0; }
+    .agent-row { display: grid; grid-template-columns: 28px 1fr 50px 1fr; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .agent-icon { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; }
     .agent-name { font-size: 13px; }
-
-    .primary-btn {
-      width: 100%;
-      margin-top: 14px;
-      border: 1px solid #7aa5ff;
-      background: #fff;
-      color: var(--blue);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 13px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      background: var(--navy);
-      color: #fff;
-      padding: 16px 26px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      letter-spacing: 0.12em;
-      font-size: 14px;
-    }
-
-    .content {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .topbar {
-      background: var(--navy);
-      color: #fff;
-      padding: 18px 26px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-    }
-
-    .topbar h1 {
-      margin: 0;
-      font-size: 26px;
-      letter-spacing: -0.02em;
-      font-weight: 700;
-    }
-
-    .topbar p {
-      margin: 8px 0 0;
-      color: #d9e6ff;
-      font-size: 15px;
-    }
-
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      padding-top: 6px;
-    }
-
-    .action-link, .action-btn {
-      color: #fff;
-      text-decoration: none;
-      font-size: 15px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      opacity: 0.95;
-    }
-
-    .action-btn {
-      background: var(--blue);
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .tabs {
-      background: #fff;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      gap: 28px;
-      padding: 0 26px;
-      overflow: auto;
-      white-space: nowrap;
-    }
-
-    .tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 18px 0 16px;
-      font-size: 14px;
-      color: var(--muted);
-      border-bottom: 3px solid transparent;
-    }
-
-    .tab.active {
-      color: var(--blue);
-      border-color: var(--blue);
-      font-weight: 700;
-    }
-
-    .main {
-      padding: 18px 22px 18px 18px;
-    }
-
-    .section-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0 0 14px 6px;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      padding: 16px;
-      min-width: 0;
-    }
-
-    .summary-card {
-      min-height: 148px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .summary-card.primary {
-      background: linear-gradient(180deg, #071e4b 0%, #0b2b69 100%);
-      color: #fff;
-    }
-
-    .summary-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-    }
-
-    .summary-value {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-top: 10px;
-    }
-
-    .summary-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .summary-card.primary .summary-sub,
-    .summary-card.primary .summary-label { color: #dce7ff; }
-
-    .micro-chart {
-      height: 30px;
-      margin-top: 10px;
-      background: linear-gradient(180deg, rgba(30,99,255,0.12), transparent);
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
+    .primary-btn, .secondary-btn { width: 100%; margin-top: 14px; border: 1px solid #7aa5ff; background: #fff; color: var(--blue); font-size: 14px; font-weight: 700; padding: 13px 16px; border-radius: 10px; cursor: pointer; }
+    .secondary-btn { margin-top: 8px; }
+    .sidebar-footer { margin-top: auto; background: var(--navy); color: #fff; padding: 16px 26px; display: flex; gap: 10px; align-items: center; letter-spacing: 0.12em; font-size: 14px; }
+    .content { display: flex; flex-direction: column; min-width: 0; }
+    .topbar { background: var(--navy); color: #fff; padding: 18px 26px 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .topbar h1 { margin: 0; font-size: 26px; letter-spacing: -0.02em; font-weight: 700; }
+    .topbar p { margin: 8px 0 0; color: #d9e6ff; font-size: 15px; }
+    .actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; padding-top: 6px; }
+    .action-link, .action-btn { color: #fff; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; opacity: 0.95; cursor: pointer; }
+    .action-btn { background: var(--blue); padding: 12px 16px; border-radius: 8px; font-weight: 700; border: 1px solid rgba(255,255,255,0.12); }
+    .tabs { background: #fff; border-bottom: 1px solid var(--line); display: flex; gap: 28px; padding: 0 26px; overflow: auto; white-space: nowrap; }
+    .tab { display: inline-flex; align-items: center; gap: 8px; padding: 18px 0 16px; font-size: 14px; color: var(--muted); border-bottom: 3px solid transparent; }
+    .tab.active { color: var(--blue); border-color: var(--blue); font-weight: 700; }
+    .main { padding: 18px 22px 18px 18px; }
+    .section-title { font-size: 24px; font-weight: 700; margin: 0 0 14px 6px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 16px; min-width: 0; }
+    .summary-card { min-height: 148px; display: flex; flex-direction: column; justify-content: space-between; }
+    .summary-card.primary { background: linear-gradient(180deg, #071e4b 0%, #0b2b69 100%); color: #fff; }
+    .summary-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+    .summary-value { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin-top: 10px; }
+    .summary-sub { font-size: 12px; color: var(--muted); }
+    .summary-card.primary .summary-sub, .summary-card.primary .summary-label { color: #dce7ff; }
+    .micro-chart { height: 30px; margin-top: 10px; background: linear-gradient(180deg, rgba(30,99,255,0.12), transparent); border-radius: 6px; position: relative; overflow: hidden; }
     .micro-chart svg { width: 100%; height: 100%; display: block; }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1.2fr 1.2fr 1.35fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .card h3 {
-      margin: 0 0 12px;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      color: var(--text);
-    }
-
-    .line-chart, .bar-chart {
-      height: 210px;
-      border-radius: 8px;
-      position: relative;
-      background:
-        linear-gradient(to bottom, rgba(15,35,70,0.05) 1px, transparent 1px) 0 0/100% 52px,
-        linear-gradient(to right, rgba(15,35,70,0.05) 1px, transparent 1px) 0 0/64px 100%;
-    }
-
+    .grid-3 { display: grid; grid-template-columns: 1.2fr 1.2fr 1.35fr; gap: 14px; margin-bottom: 14px; }
+    .card h3 { margin: 0 0 12px; font-size: 14px; font-weight: 800; letter-spacing: 0.02em; color: var(--text); }
+    .line-chart, .bar-chart { height: 210px; border-radius: 8px; position: relative; background: linear-gradient(to bottom, rgba(15,35,70,0.05) 1px, transparent 1px) 0 0/100% 52px, linear-gradient(to right, rgba(15,35,70,0.05) 1px, transparent 1px) 0 0/64px 100%; }
     .line-chart svg, .bar-chart svg { width: 100%; height: 100%; display: block; }
-
-    .row-3 {
-      display: grid;
-      grid-template-columns: 1fr 1.35fr 1.35fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .risk-item, .rec-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .dot-good, .dot-warn, .dot-blue, .num-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex: 0 0 auto;
-    }
-
+    .row-3 { display: grid; grid-template-columns: 1fr 1.35fr 1.35fr; gap: 14px; margin-bottom: 14px; }
+    .risk-item, .rec-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 13px; line-height: 1.45; }
+    .dot-good, .dot-warn, .dot-blue, .num-dot { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: 0 0 auto; }
     .dot-good { color: var(--good); border: 2px solid var(--good); }
     .dot-warn { color: var(--warn); border: 2px solid var(--warn); }
     .dot-blue { color: var(--blue); border: 2px solid var(--blue); }
     .num-dot { background: var(--blue); color: #fff; }
-
-    .exec-summary {
-      font-size: 13px;
-      line-height: 1.55;
-      color: #22375e;
-    }
-
-    .regen-btn, .view-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      border: 1px solid #84aefc;
-      color: var(--blue);
-      padding: 9px 12px;
-      border-radius: 8px;
-      background: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .impact-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .impact-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-height: 86px;
-    }
-
-    .impact-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      border: 3px solid var(--blue);
-      color: var(--blue);
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      font-weight: 700;
-      flex: 0 0 auto;
-    }
-
+    .exec-summary { font-size: 13px; line-height: 1.55; color: #22375e; }
+    .regen-btn, .view-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; border: 1px solid #84aefc; color: var(--blue); padding: 9px 12px; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .impact-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+    .impact-card { display: flex; align-items: center; gap: 14px; min-height: 86px; }
+    .impact-icon { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--blue); color: var(--blue); display: grid; place-items: center; font-size: 22px; font-weight: 700; flex: 0 0 auto; }
     .impact-label { font-size: 13px; color: var(--muted); }
     .impact-value { font-size: 17px; font-weight: 800; margin-top: 4px; }
     .good { color: var(--good); }
     .blue { color: var(--blue); }
-
-    @media (max-width: 1400px) {
-      .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 1120px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
-      .grid-3, .row-3, .impact-grid { grid-template-columns: 1fr; }
-    }
+    .warn { color: var(--warn); }
+    .drawer { position: fixed; top: 0; right: -420px; width: 420px; max-width: 100%; height: 100vh; background: #fff; border-left: 1px solid var(--line); box-shadow: -8px 0 24px rgba(0,0,0,.08); transition: right .2s ease; z-index: 30; overflow: auto; }
+    .drawer.open { right: 0; }
+    .drawer-header { padding: 18px 18px 10px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+    .drawer-body { padding: 16px 18px 22px; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .scenario-item { border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+    .mini-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    @media (max-width: 1400px) { .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 1120px) { .app { grid-template-columns: 1fr; } .sidebar { border-right: 0; border-bottom: 1px solid var(--line); } .grid-3, .row-3, .impact-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
+  <input id="importJsonInput" type="file" accept="application/json" style="display:none;" />
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
@@ -536,84 +157,35 @@
         <div class="side-body">
           <div class="control-group">
             <div class="control-label"><span>Simulation Mode</span><span>ⓘ</span></div>
-            <select><option>Monte Carlo</option></select>
+            <select id="simulationMode"><option value="monte_carlo">Monte Carlo</option></select>
           </div>
           <div class="control-group">
             <div class="control-label"><span>Simulation Runs</span><span>ⓘ</span></div>
             <div class="slider-row">
-              <input type="number" value="250" />
-              <input type="range" value="250" min="50" max="500" />
+              <input id="simulationRunsValue" type="number" value="250" />
+              <input id="simulationRuns" type="range" value="250" min="50" max="500" />
             </div>
           </div>
           <div class="control-group">
             <div class="control-label"><span>Noise Level</span><span>ⓘ</span></div>
-            <select><option>Medium (±0.03)</option></select>
+            <select id="noisePreset"><option value="low">Low (±0.015)</option><option value="medium" selected>Medium (±0.03)</option><option value="high">High (±0.05)</option></select>
           </div>
           <div class="control-group">
-            <div class="control-label"><span>Enable Feedback Loop</span><span class="switch"></span></div>
+            <div class="control-label"><span>Enable Feedback Loop</span><span id="loopToggle" class="switch on"></span></div>
           </div>
 
           <div class="divider"></div>
 
           <div class="control-label" style="margin-bottom: 14px;"><span>AGENT RELIABILITY (D)</span><span>ⓘ</span></div>
+          <div id="agentControls"></div>
 
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#1759c5;">✕</div>
-            <div class="agent-name">Router</div>
-            <input type="number" value="0.87" />
-            <input type="range" value="87" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#6d55e8;">▣</div>
-            <div class="agent-name">Planner</div>
-            <input type="number" value="0.90" />
-            <input type="range" value="90" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#13a164;">&lt;/&gt;</div>
-            <div class="agent-name">Coder</div>
-            <input type="number" value="0.92" />
-            <input type="range" value="92" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#ef9b1e;">▶</div>
-            <div class="agent-name">Executor</div>
-            <input type="number" value="0.85" />
-            <input type="range" value="85" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#dd4b45;">⛨</div>
-            <div class="agent-name">Critic</div>
-            <input type="number" value="0.90" />
-            <input type="range" value="90" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#23a4c6;">◫</div>
-            <div class="agent-name">Memory</div>
-            <input type="number" value="0.88" />
-            <input type="range" value="88" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#2284dd;">✓</div>
-            <div class="agent-name">Verifier</div>
-            <input type="number" value="0.93" />
-            <input type="range" value="93" />
-          </div>
-          <div class="agent-row">
-            <div class="agent-icon" style="background:#7d51d4;">⌁</div>
-            <div class="agent-name">Tool</div>
-            <input type="number" value="0.86" />
-            <input type="range" value="86" />
-          </div>
-
-          <button class="primary-btn">⚡ Optimize My Architecture</button>
+          <button id="optimizeBtn" class="primary-btn">⚡ Optimize My Architecture</button>
+          <button id="brandingBtn" class="secondary-btn">🎨 White-label Branding</button>
+          <button id="scenariosBtn" class="secondary-btn">🗂 Save / Load Scenarios</button>
         </div>
       </section>
 
-      <div class="sidebar-footer">
-        <span>◔</span>
-        <span>COHERENT AGENTS</span>
-      </div>
+      <div class="sidebar-footer"><span>◔</span><span>COHERENT AGENTS</span></div>
     </aside>
 
     <main class="content">
@@ -623,11 +195,11 @@
           <p>Measure. Optimize. Scale with Coherence.</p>
         </div>
         <div class="actions">
-          <a class="action-link" href="#">◔ New</a>
-          <a class="action-link" href="#">💾 Save</a>
-          <a class="action-link" href="#">📂 Load</a>
-          <a class="action-link" href="#">⇪ Export JSON</a>
-          <a class="action-btn" href="#">📄 Export PDF Report</a>
+          <span id="newBtn" class="action-link">◔ New</span>
+          <span id="saveBtn" class="action-link">💾 Save</span>
+          <span id="loadBtn" class="action-link">📂 Load</span>
+          <span id="exportJsonBtn" class="action-link">⇪ Export JSON</span>
+          <span id="exportPdfBtn" class="action-btn">📄 Export PDF Report</span>
         </div>
       </header>
 
@@ -641,170 +213,575 @@
 
       <div class="main">
         <div class="section-title">ARCHITECTURE SUMMARY</div>
-
-        <section class="summary-grid">
-          <div class="card summary-card primary">
-            <div>
-              <div class="summary-label">Coherence Score ⓘ</div>
-              <div class="summary-value">0.742</div>
-              <div class="summary-sub">Active <span style="color:#81f7c4; font-weight:700;">(Loop On)</span></div>
-            </div>
-            <div class="micro-chart">
-              <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#29a8ff" stroke-width="2.2" points="0,23 12,18 24,21 36,19 48,20 60,18 72,19 84,15 100,8" />
-              </svg>
-            </div>
-          </div>
-
-          <div class="card summary-card">
-            <div>
-              <div class="summary-label">DAG Score</div>
-              <div class="summary-value">0.662</div>
-              <div class="summary-sub">Acyclic (Loop Off)</div>
-            </div>
-            <div class="micro-chart">
-              <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#2d8eff" stroke-width="2" points="0,25 18,20 32,21 46,19 58,18 74,17 86,13 100,10" />
-              </svg>
-            </div>
-          </div>
-
-          <div class="card summary-card">
-            <div>
-              <div class="summary-label">Improvement</div>
-              <div class="summary-value good">+12.1%</div>
-              <div class="summary-sub">From Loop</div>
-            </div>
-            <div class="micro-chart">
-              <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#25a3ff" stroke-width="2" points="0,24 15,23 30,22 45,20 60,18 74,16 88,13 100,9" />
-              </svg>
-            </div>
-          </div>
-
-          <div class="card summary-card">
-            <div>
-              <div class="summary-label">Error Reduction</div>
-              <div class="summary-value good">-28.4%</div>
-              <div class="summary-sub">Compared to DAG</div>
-            </div>
-            <div class="micro-chart">
-              <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#25a3ff" stroke-width="2" points="0,25 15,22 32,20 48,18 62,16 75,15 88,12 100,10" />
-              </svg>
-            </div>
-          </div>
-
-          <div class="card summary-card" style="text-align:center; align-items:center; justify-content:center;">
-            <div class="summary-label">Loop Risk</div>
-            <div class="summary-value good">Low</div>
-            <div class="summary-sub">Stable Feedback</div>
-            <div style="font-size:34px; color:var(--good); margin-top:8px;">🛡</div>
-          </div>
-
-          <div class="card summary-card" style="text-align:center; align-items:center; justify-content:center;">
-            <div class="summary-label">Bottleneck</div>
-            <div class="summary-value good">None</div>
-            <div class="summary-sub">System Balanced</div>
-            <div style="font-size:34px; color:var(--good); margin-top:8px;">✓</div>
-          </div>
-        </section>
-
+        <section id="summaryGrid" class="summary-grid"></section>
         <section class="grid-3">
-          <div class="card">
-            <h3>SCORE TRAJECTORY ⓘ</h3>
-            <div class="line-chart">
-              <svg viewBox="0 0 320 210" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#1e63ff" stroke-width="3" points="18,76 46,74 74,78 102,75 130,76 158,74 186,77 214,74 242,75 270,74 300,76" />
-                <polyline fill="none" stroke="#9ca8bb" stroke-dasharray="6 5" stroke-width="3" points="18,104 46,103 74,102 102,104 130,103 158,103 186,104 214,103 242,104 270,103 300,104" />
-              </svg>
-            </div>
-          </div>
-          <div class="card">
-            <h3>INTEGRITY STABILITY ⓘ</h3>
-            <div class="line-chart">
-              <svg viewBox="0 0 320 210" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#1e63ff" stroke-width="3" points="18,86 46,78 74,80 102,78 130,86 158,77 186,77 214,84 242,79 270,80 300,82" />
-                <polyline fill="none" stroke="#97a3b6" stroke-dasharray="6 5" stroke-width="3" points="18,118 46,108 74,116 102,110 130,120 158,108 186,110 214,116 242,111 270,118 300,121" />
-              </svg>
-            </div>
-          </div>
-          <div class="card">
-            <h3>AGENT PERFORMANCE (D Values) ⓘ</h3>
-            <div class="bar-chart">
-              <svg viewBox="0 0 360 210" preserveAspectRatio="none">
-                <g fill="#1f73e0">
-                  <rect x="20" y="72" width="24" height="108" rx="4" />
-                  <rect x="60" y="60" width="24" height="120" rx="4" />
-                  <rect x="100" y="52" width="24" height="128" rx="4" />
-                  <rect x="140" y="83" width="24" height="97" rx="4" />
-                  <rect x="180" y="60" width="24" height="120" rx="4" />
-                  <rect x="220" y="68" width="24" height="112" rx="4" />
-                  <rect x="260" y="48" width="24" height="132" rx="4" />
-                  <rect x="300" y="80" width="24" height="100" rx="4" />
-                </g>
-              </svg>
-            </div>
-          </div>
+          <div class="card"><h3>SCORE TRAJECTORY ⓘ</h3><div class="line-chart"><svg id="scoreTrajectoryChart" viewBox="0 0 320 210" preserveAspectRatio="none"></svg></div></div>
+          <div class="card"><h3>INTEGRITY STABILITY ⓘ</h3><div class="line-chart"><svg id="integrityChart" viewBox="0 0 320 210" preserveAspectRatio="none"></svg></div></div>
+          <div class="card"><h3>AGENT PERFORMANCE (D Values) ⓘ</h3><div class="bar-chart"><svg id="agentBarChart" viewBox="0 0 360 210" preserveAspectRatio="none"></svg></div></div>
         </section>
-
         <section class="row-3">
-          <div class="card">
-            <h3>RISK ASSESSMENT ⓘ</h3>
-            <div class="risk-item"><div class="dot-good">✓</div><div><strong>Loop Risk</strong><br><span class="summary-sub">Feedback loop is stable and productive.</span></div><div style="margin-left:auto; color:var(--good); font-weight:700;">Low</div></div>
-            <div class="risk-item"><div class="dot-good">✓</div><div><strong>Executor Bottleneck</strong><br><span class="summary-sub">No significant bottleneck detected.</span></div><div style="margin-left:auto; color:var(--good); font-weight:700;">None</div></div>
-            <div class="risk-item"><div class="dot-warn">!</div><div><strong>Critic Underperformance</strong><br><span class="summary-sub">Consider strengthening validation.</span></div><div style="margin-left:auto; color:var(--warn); font-weight:700;">Watch</div></div>
-            <div class="risk-item"><div class="dot-blue">i</div><div><strong>System Integrity</strong><br><span class="summary-sub">Overall system integrity is strong.</span></div><div style="margin-left:auto; color:var(--blue); font-weight:700;">Good</div></div>
-          </div>
-
-          <div class="card">
-            <h3><span style="display:inline-block; background:#7d40e7; color:#fff; padding:3px 7px; border-radius:6px; margin-right:8px;">AI</span>AI-GENERATED EXECUTIVE SUMMARY ⓘ</h3>
-            <div class="exec-summary">
-              The architecture demonstrates strong structural coherence with the feedback loop enabled. The system shows a <span class="good" style="font-weight:700;">12.1% improvement</span> in coherence and a <span class="good" style="font-weight:700;">28.4% reduction</span> in expected error rate compared to the acyclic configuration.<br><br>
-              Agent reliability is well-balanced, with Verifier and Coder performing at the highest levels. The Critic agent is performing slightly below the system average and represents the primary opportunity for risk reduction.<br><br>
-              Overall, this architecture is well-positioned for scale, with low loop risk and <span class="blue" style="font-weight:700;">no major bottlenecks detected</span>.
-            </div>
-            <a class="regen-btn" href="#">⚡ Regenerate Narrative</a>
-          </div>
-
-          <div class="card">
-            <h3>TOP RECOMMENDATIONS ⓘ</h3>
-            <div class="rec-item"><div class="num-dot">1</div><div>Strengthen Critic agent reliability to above 0.92.</div></div>
-            <div class="rec-item"><div class="num-dot">2</div><div>Maintain feedback loop, it is driving meaningful coherence gains.</div></div>
-            <div class="rec-item"><div class="num-dot">3</div><div>Consider increasing Verifier redundancy if system scales.</div></div>
-            <div class="rec-item"><div class="num-dot">4</div><div>Monitor Executor reliability as system load increases.</div></div>
-            <div class="rec-item"><div class="num-dot">5</div><div>Re-run stress test after changes to validate improvements.</div></div>
-            <a class="view-btn" href="#">↗ View Full Recommendations</a>
-          </div>
+          <div class="card"><h3>RISK ASSESSMENT ⓘ</h3><div id="riskAssessment"></div></div>
+          <div class="card"><h3><span style="display:inline-block; background:#7d40e7; color:#fff; padding:3px 7px; border-radius:6px; margin-right:8px;">AI</span>AI-GENERATED EXECUTIVE SUMMARY ⓘ</h3><div id="executiveSummary" class="exec-summary"></div><span id="regenNarrativeBtn" class="regen-btn">⚡ Regenerate Narrative</span></div>
+          <div class="card"><h3>TOP RECOMMENDATIONS ⓘ</h3><div id="recommendations"></div><span id="viewRecommendationsBtn" class="view-btn">↗ View Full Recommendations</span></div>
         </section>
-
-        <section class="card">
-          <h3>BUSINESS IMPACT &amp; ROI TRANSLATION ⓘ</h3>
-          <div class="impact-grid">
-            <div class="impact-card">
-              <div class="impact-icon">◎</div>
-              <div><div class="impact-label">Stability Improvement</div><div class="impact-value good">+12.1%</div><div class="summary-sub">vs. Acyclic</div></div>
-            </div>
-            <div class="impact-card">
-              <div class="impact-icon">✓</div>
-              <div><div class="impact-label">Error Reduction</div><div class="impact-value good">-28.4%</div><div class="summary-sub">vs. Acyclic</div></div>
-            </div>
-            <div class="impact-card">
-              <div class="impact-icon">$</div>
-              <div><div class="impact-label">Cost per Run</div><div class="impact-value blue">$0.0187</div><div class="summary-sub">Estimated</div></div>
-            </div>
-            <div class="impact-card">
-              <div class="impact-icon">◷</div>
-              <div><div class="impact-label">Latency</div><div class="impact-value blue">1,248 ms</div><div class="summary-sub">End-to-end</div></div>
-            </div>
-            <div class="impact-card">
-              <div class="impact-icon">↗</div>
-              <div><div class="impact-label">ROI Potential</div><div class="impact-value good">High</div><div class="summary-sub">Strong Value Uplift</div></div>
-            </div>
-          </div>
-        </section>
+        <section class="card"><h3>BUSINESS IMPACT &amp; ROI TRANSLATION ⓘ</h3><div id="impactGrid" class="impact-grid"></div></section>
       </div>
     </main>
   </div>
+
+  <aside id="brandingDrawer" class="drawer">
+    <div class="drawer-header"><strong>White-label branding</strong><button data-close-drawer="brandingDrawer">Close</button></div>
+    <div class="drawer-body">
+      <div class="control-group"><div class="control-label"><span>Report title</span></div><input id="brandReportTitle" type="text" /></div>
+      <div class="control-group"><div class="control-label"><span>Client name</span></div><input id="brandClientName" type="text" /></div>
+      <div class="control-group"><div class="control-label"><span>Consultant name</span></div><input id="brandConsultantName" type="text" /></div>
+      <div class="control-group"><div class="control-label"><span>Primary color</span></div><input id="brandPrimaryColor" type="color" /></div>
+      <div class="control-group"><div class="control-label"><span>Secondary color</span></div><input id="brandSecondaryColor" type="color" /></div>
+      <div class="control-group"><div class="control-label"><span>Logo</span></div><input id="brandLogoInput" type="file" accept="image/*" /><div class="hint">Optional, used in the exported report.</div></div>
+      <button id="saveBrandingBtn" class="primary-btn">Save Branding</button>
+    </div>
+  </aside>
+
+  <aside id="scenarioDrawer" class="drawer">
+    <div class="drawer-header"><strong>Scenarios</strong><button data-close-drawer="scenarioDrawer">Close</button></div>
+    <div class="drawer-body">
+      <div class="control-group"><div class="control-label"><span>Scenario name</span></div><input id="scenarioNameInput" type="text" placeholder="Example: Loop stress test" /></div>
+      <button id="scenarioSaveBtn" class="primary-btn">Save Current Scenario</button>
+      <div class="divider"></div>
+      <div id="scenarioList"></div>
+      <div class="hint">Double-click “Load” in the top bar to import a JSON file.</div>
+    </div>
+  </aside>
+
+  <script>
+    const DEFAULT_STATE = {
+      simulationMode: 'monte_carlo',
+      simulationRuns: 250,
+      noisePreset: 'medium',
+      loopEnabled: true,
+      lambda: 0.35,
+      tau: 0.10,
+      mu: 0.15,
+      kPerf: 3.0,
+      k6: 0.90,
+      k7: 0.95,
+      sigma: 0.03,
+      agentOrder: ['router', 'planner', 'coder', 'executor', 'critic', 'memory', 'verifier', 'tool'],
+      agents: {
+        router: { name: 'Router', icon: '✕', color: '#1759c5', d: 0.87, cost: 0.0019, latency: 120 },
+        planner: { name: 'Planner', icon: '▣', color: '#6d55e8', d: 0.90, cost: 0.0020, latency: 150 },
+        coder: { name: 'Coder', icon: '</>', color: '#13a164', d: 0.92, cost: 0.0025, latency: 210 },
+        executor: { name: 'Executor', icon: '▶', color: '#ef9b1e', d: 0.85, cost: 0.0030, latency: 260 },
+        critic: { name: 'Critic', icon: '⛨', color: '#dd4b45', d: 0.90, cost: 0.0024, latency: 180 },
+        memory: { name: 'Memory', icon: '◫', color: '#23a4c6', d: 0.88, cost: 0.0013, latency: 90 },
+        verifier: { name: 'Verifier', icon: '✓', color: '#2284dd', d: 0.93, cost: 0.0021, latency: 140 },
+        tool: { name: 'Tool', icon: '⌁', color: '#7d51d4', d: 0.86, cost: 0.0035, latency: 98 }
+      },
+      edges: [
+        { id: 'e1', from: 'router', to: 'planner', rho: 0.98, optional: false },
+        { id: 'e2', from: 'planner', to: 'coder', rho: 0.92, optional: false },
+        { id: 'e3', from: 'planner', to: 'memory', rho: 0.89, optional: false },
+        { id: 'e4', from: 'planner', to: 'tool', rho: 0.90, optional: false },
+        { id: 'e5', from: 'coder', to: 'executor', rho: 0.95, optional: false },
+        { id: 'e6', from: 'memory', to: 'executor', rho: 0.87, optional: false },
+        { id: 'e7', from: 'tool', to: 'executor', rho: 0.88, optional: false },
+        { id: 'e8', from: 'executor', to: 'critic', rho: 0.94, optional: false },
+        { id: 'e9', from: 'critic', to: 'executor', rho: 0.91, optional: true },
+        { id: 'e10', from: 'critic', to: 'verifier', rho: 0.90, optional: false }
+      ],
+      branding: {
+        reportTitle: 'Coherent Agents Architecture Audit',
+        clientName: 'Client Name',
+        consultantName: 'Prepared by Coherent Agents',
+        primaryColor: '#0f3d63',
+        secondaryColor: '#5b7ea0',
+        logoDataUrl: ''
+      },
+      narrativeVariant: 0
+    };
+
+    const NOISE_PRESETS = {
+      low: { sigma: 0.015 },
+      medium: { sigma: 0.03 },
+      high: { sigma: 0.05 }
+    };
+
+    let state = clone(DEFAULT_STATE);
+    let compareA = null;
+    let compareB = null;
+
+    function clone(v) { return JSON.parse(JSON.stringify(v)); }
+    function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+    function pct(v) { return `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`; }
+    function hashString(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+    function seededRandom(seed) { let s = seed >>> 0; return function() { s = (1664525 * s + 1013904223) >>> 0; return s / 4294967296; }; }
+
+    function currentNoiseSigma() { return NOISE_PRESETS[state.noisePreset]?.sigma ?? state.sigma; }
+
+    function openDrawer(id) { document.getElementById(id).classList.add('open'); }
+    function closeDrawer(id) { document.getElementById(id).classList.remove('open'); }
+
+    function computeSystem(localState = state) {
+      const agents = localState.agentOrder.map(k => ({ key: k, ...localState.agents[k] }));
+      const baseEdges = localState.edges.filter(e => !e.optional);
+      const activeEdges = localState.edges.filter(e => !e.optional || localState.loopEnabled);
+      const agentScores = agents.map(a => Math.exp(-localState.kPerf * (1 - a.d)));
+      const avgAgentScore = agentScores.reduce((a, b) => a + b, 0) / agentScores.length;
+      const edgeScore = edges => edges.reduce((sum, e) => sum + e.rho * localState.agents[e.from].d * localState.agents[e.to].d, 0);
+      const dagScore = avgAgentScore + localState.lambda * (edgeScore(baseEdges) - localState.tau * baseEdges.length);
+      const loopScore = avgAgentScore + localState.lambda * (edgeScore(activeEdges) - localState.tau * activeEdges.length - (localState.loopEnabled ? localState.mu : 0));
+      const activeScore = localState.loopEnabled ? loopScore : dagScore;
+      const improvementPct = ((loopScore - dagScore) / Math.max(0.0001, dagScore)) * 100;
+      const errorReductionPct = Math.max(0, Math.min(95, Math.abs(improvementPct) * 2.35));
+      const riskRaw = localState.loopEnabled ? ((localState.lambda * localState.lambda * 0.94 * 0.91) / (localState.k6 * localState.k7)) : 0.42;
+      const loopRisk = riskRaw < 0.6 ? 'Low' : riskRaw < 0.9 ? 'Medium' : 'High';
+      const weakest = agents.slice().sort((a, b) => a.d - b.d)[0];
+      const bottleneck = weakest.d < 0.84 ? weakest.name : 'None';
+      const costPerRun = agents.reduce((s, a) => s + a.cost, 0);
+      const latency = agents.reduce((s, a) => s + a.latency, 0);
+      const roiPotential = activeScore > 0.73 ? 'High' : activeScore > 0.66 ? 'Moderate' : 'Limited';
+      return {
+        agents,
+        dag: { score: dagScore },
+        loop: { score: loopScore },
+        active: { score: activeScore },
+        improvementPct,
+        errorReductionPct,
+        loopRisk,
+        bottleneck,
+        costPerRun,
+        latency,
+        roiPotential,
+        weakest,
+        strongest: agents.slice().sort((a, b) => b.d - a.d)[0]
+      };
+    }
+
+    function buildSeries(localState = state) {
+      const sys = computeSystem(localState);
+      const points = 11;
+      const seed = hashString(JSON.stringify({ loop: localState.loopEnabled, runs: localState.simulationRuns, noise: localState.noisePreset, narrative: localState.narrativeVariant, agents: localState.agents, edges: localState.edges }));
+      const randA = seededRandom(seed);
+      const randB = seededRandom(seed + 17);
+      const randC = seededRandom(seed + 41);
+      const loopVals = [];
+      const dagVals = [];
+      const execVals = [];
+      const criticVals = [];
+      const loopBase = sys.loop.score;
+      const dagBase = sys.dag.score;
+      const execBase = localState.agents.executor?.d ?? 0.85;
+      const criticBase = localState.agents.critic?.d ?? 0.90;
+      const sigma = currentNoiseSigma();
+      for (let i = 0; i < points; i++) {
+        const drift = (i / (points - 1)) * 0.012;
+        loopVals.push(clamp(loopBase + (randA() - 0.5) * sigma * 1.25 + drift, 0.55, 0.96));
+        dagVals.push(clamp(dagBase + (randB() - 0.5) * sigma * 0.9 - drift * 0.2, 0.48, 0.94));
+        execVals.push(clamp(execBase + (randC() - 0.5) * sigma * 1.4 + 0.01 * Math.sin(i / 2), 0.60, 0.99));
+        criticVals.push(clamp(criticBase + (randA() - 0.5) * sigma * 1.25 + 0.008 * Math.cos(i / 2), 0.60, 0.99));
+      }
+      return { loopVals, dagVals, execVals, criticVals };
+    }
+
+    function svgPolyline(values, color, dashed = false) {
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const scale = (v, i) => {
+        const x = 18 + i * ((300 - 18) / (values.length - 1));
+        const y = 180 - ((v - min) / Math.max(0.0001, max - min)) * 120;
+        return `${x},${y}`;
+      };
+      return `<polyline fill="none" stroke="${color}" ${dashed ? 'stroke-dasharray="6 5"' : ''} stroke-width="3" points="${values.map(scale).join(' ')}" />`;
+    }
+
+    function renderLineChart(el, valuesA, valuesB) {
+      el.innerHTML = `${svgPolyline(valuesA, '#1e63ff')}${svgPolyline(valuesB, '#9ca8bb', true)}`;
+    }
+
+    function renderBarChart(el, values, labels) {
+      const width = 360, base = 180, maxBar = 132;
+      const count = Math.max(1, values.length);
+      const gap = Math.max(24, Math.floor((width - 40) / count));
+      const barW = Math.min(24, Math.max(14, gap - 12));
+      const x0 = 20;
+      let out = '';
+      values.forEach((v, i) => {
+        const h = (v / 1.0) * maxBar;
+        const x = x0 + i * gap;
+        const y = base - h;
+        out += `<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" rx="4" fill="#1f73e0"></rect>`;
+        out += `<text x="${x + barW / 2}" y="${(y - 8).toFixed(1)}" text-anchor="middle" font-size="11" fill="#0f2346" font-weight="700">${v.toFixed(2)}</text>`;
+        out += `<text x="${x + barW / 2}" y="194" text-anchor="middle" font-size="10" fill="#5f7091">${labels[i]}</text>`;
+      });
+      el.innerHTML = out;
+    }
+
+    function computeRiskItems(sys) {
+      return [
+        { label: 'Loop Risk', sub: sys.loopRisk === 'Low' ? 'Feedback loop is stable and productive.' : 'Feedback loop needs closer monitoring.', status: sys.loopRisk, tone: sys.loopRisk === 'Low' ? 'good' : 'warn' },
+        { label: 'Executor Bottleneck', sub: sys.bottleneck === 'None' ? 'No significant bottleneck detected.' : `${sys.bottleneck} is the main throughput constraint.`, status: sys.bottleneck === 'None' ? 'None' : 'Watch', tone: sys.bottleneck === 'None' ? 'good' : 'warn' },
+        { label: 'Critic Underperformance', sub: state.agents.critic.d >= 0.9 ? 'Critic is within acceptable operating range.' : 'Consider strengthening validation.', status: state.agents.critic.d >= 0.9 ? 'Good' : 'Watch', tone: state.agents.critic.d >= 0.9 ? 'blue' : 'warn' },
+        { label: 'System Integrity', sub: 'Overall system integrity is strong.', status: sys.active.score > 0.70 ? 'Good' : 'Mixed', tone: sys.active.score > 0.70 ? 'blue' : 'warn' }
+      ];
+    }
+
+    function computeNarrative(sys) {
+      const strongest = sys.strongest;
+      const weakest = sys.weakest;
+      const variant = state.narrativeVariant % 3;
+      const lead = [
+        `The architecture demonstrates ${sys.loopRisk === 'Low' ? 'strong structural coherence' : 'mixed structural performance'} with the feedback loop ${state.loopEnabled ? 'enabled' : 'disabled'}.`,
+        `Current system topology shows ${sys.improvementPct > 0 ? 'a measurable gain from feedback routing' : 'limited value from additional feedback routing'} under the present assumptions.`,
+        `Simulation results indicate ${sys.roiPotential.toLowerCase()} commercial leverage, driven primarily by the interaction between reliability, graph coupling, and verification quality.`
+      ][variant];
+      const middle = `The system shows a <span class="good" style="font-weight:700;">${Math.abs(sys.improvementPct).toFixed(1)}% ${sys.improvementPct >= 0 ? 'improvement' : 'decline'}</span> in coherence and a <span class="good" style="font-weight:700;">${Math.abs(sys.errorReductionPct).toFixed(1)}%</span> modeled shift in expected error rate compared to the acyclic configuration.`;
+      const end = `${strongest.name} is currently the strongest-performing agent, while ${weakest.name} represents the primary near-term opportunity for risk reduction. Overall, this architecture is ${sys.roiPotential === 'High' ? 'well-positioned for scale' : 'viable but still benefits from additional tuning'}, with ${sys.loopRisk.toLowerCase()} loop risk and ${sys.bottleneck === 'None' ? '<span class="blue" style="font-weight:700;">no major bottlenecks detected</span>' : `<span class="warn" style="font-weight:700;">a watchpoint at ${sys.bottleneck}</span>`}.`;
+      return `${lead}<br><br>${middle}<br><br>${end}`;
+    }
+
+    function computeNarrativeParagraphs(sys) {
+      return computeNarrative(sys).split('<br><br>').map(x => x.trim());
+    }
+
+    function computeRecommendations(sys) {
+      const recs = [];
+      if (state.loopEnabled && sys.improvementPct > 0 && sys.loopRisk === 'Low') recs.push('Maintain the feedback loop, it is improving coherence without introducing material instability.');
+      else if (state.loopEnabled) recs.push('Re-evaluate the feedback loop under heavier noise or scale conditions before broader deployment.');
+      else recs.push('Test a controlled feedback loop pilot, because the current DAG may be leaving performance on the table.');
+      if (state.agents.critic.d < 0.92) recs.push('Strengthen Critic agent reliability to above 0.92.');
+      if (sys.bottleneck !== 'None') recs.push(`Reduce load concentration on ${sys.bottleneck} or add redundancy before scaling traffic.`);
+      recs.push('Consider increasing Verifier redundancy if the system scales.');
+      recs.push('Re-run a stress test after any configuration changes to validate improvements.');
+      return recs.slice(0, 5);
+    }
+
+    function renderSummary(sys, series) {
+      const summaryGrid = document.getElementById('summaryGrid');
+      summaryGrid.innerHTML = `
+        <div class="card summary-card primary"><div><div class="summary-label">Coherence Score ⓘ</div><div class="summary-value">${sys.active.score.toFixed(3)}</div><div class="summary-sub">Active <span style="color:#81f7c4; font-weight:700;">(${state.loopEnabled ? 'Loop On' : 'Loop Off'})</span></div></div><div class="micro-chart"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#29a8ff" stroke-width="2.2" points="${series.loopVals.map((v, i) => `${i * 10},${25 - (v - 0.55) * 40}`).join(' ')}" /></svg></div></div>
+        <div class="card summary-card"><div><div class="summary-label">DAG Score</div><div class="summary-value">${sys.dag.score.toFixed(3)}</div><div class="summary-sub">Acyclic (Loop Off)</div></div><div class="micro-chart"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#2d8eff" stroke-width="2" points="${series.dagVals.map((v, i) => `${i * 10},${25 - (v - 0.48) * 42}`).join(' ')}" /></svg></div></div>
+        <div class="card summary-card"><div><div class="summary-label">Improvement</div><div class="summary-value good">${pct(sys.improvementPct)}</div><div class="summary-sub">From Loop</div></div><div class="micro-chart"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#25a3ff" stroke-width="2" points="0,24 15,22 30,20 45,19 60,16 75,13 90,10 100,8" /></svg></div></div>
+        <div class="card summary-card"><div><div class="summary-label">Error Reduction</div><div class="summary-value good">-${sys.errorReductionPct.toFixed(1)}%</div><div class="summary-sub">Compared to DAG</div></div><div class="micro-chart"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline fill="none" stroke="#25a3ff" stroke-width="2" points="0,25 15,22 32,20 48,18 62,16 75,15 88,12 100,10" /></svg></div></div>
+        <div class="card summary-card" style="text-align:center; align-items:center; justify-content:center;"><div class="summary-label">Loop Risk</div><div class="summary-value ${sys.loopRisk === 'Low' ? 'good' : sys.loopRisk === 'Medium' ? 'warn' : ''}">${sys.loopRisk}</div><div class="summary-sub">Stable Feedback</div><div style="font-size:34px; color:${sys.loopRisk === 'Low' ? 'var(--good)' : 'var(--warn)'}; margin-top:8px;">🛡</div></div>
+        <div class="card summary-card" style="text-align:center; align-items:center; justify-content:center;"><div class="summary-label">Bottleneck</div><div class="summary-value ${sys.bottleneck === 'None' ? 'good' : 'warn'}">${sys.bottleneck}</div><div class="summary-sub">System ${sys.bottleneck === 'None' ? 'Balanced' : 'Watchpoint'}</div><div style="font-size:34px; color:${sys.bottleneck === 'None' ? 'var(--good)' : 'var(--warn)'}; margin-top:8px;">${sys.bottleneck === 'None' ? '✓' : '!'}</div></div>
+      `;
+    }
+
+    function renderCharts(sys, series) {
+      renderLineChart(document.getElementById('scoreTrajectoryChart'), series.loopVals, series.dagVals);
+      renderLineChart(document.getElementById('integrityChart'), series.execVals, series.criticVals);
+      const values = state.agentOrder.map(k => state.agents[k].d);
+      const labels = state.agentOrder.map(k => state.agents[k].name);
+      renderBarChart(document.getElementById('agentBarChart'), values, labels);
+    }
+
+    function renderRiskAssessment(items) {
+      document.getElementById('riskAssessment').innerHTML = items.map(item => `
+        <div class="risk-item"><div class="${item.tone === 'good' ? 'dot-good' : item.tone === 'warn' ? 'dot-warn' : 'dot-blue'}">${item.tone === 'good' ? '✓' : item.tone === 'warn' ? '!' : 'i'}</div><div><strong>${item.label}</strong><br><span class="summary-sub">${item.sub}</span></div><div style="margin-left:auto; color:${item.tone === 'good' ? 'var(--good)' : item.tone === 'warn' ? 'var(--warn)' : 'var(--blue)'}; font-weight:700;">${item.status}</div></div>
+      `).join('');
+    }
+
+    function renderRecommendations(recs) {
+      document.getElementById('recommendations').innerHTML = recs.map((r, i) => `<div class="rec-item"><div class="num-dot">${i + 1}</div><div>${r}</div></div>`).join('');
+    }
+
+    function renderImpact(sys) {
+      document.getElementById('impactGrid').innerHTML = `
+        <div class="impact-card"><div class="impact-icon">◎</div><div><div class="impact-label">Stability Improvement</div><div class="impact-value good">${pct(sys.improvementPct)}</div><div class="summary-sub">vs. Acyclic</div></div></div>
+        <div class="impact-card"><div class="impact-icon">✓</div><div><div class="impact-label">Error Reduction</div><div class="impact-value good">-${sys.errorReductionPct.toFixed(1)}%</div><div class="summary-sub">vs. Acyclic</div></div></div>
+        <div class="impact-card"><div class="impact-icon">$</div><div><div class="impact-label">Cost per Run</div><div class="impact-value blue">$${sys.costPerRun.toFixed(4)}</div><div class="summary-sub">Estimated</div></div></div>
+        <div class="impact-card"><div class="impact-icon">◷</div><div><div class="impact-label">Latency</div><div class="impact-value blue">${sys.latency.toLocaleString()} ms</div><div class="summary-sub">End-to-end</div></div></div>
+        <div class="impact-card"><div class="impact-icon">↗</div><div><div class="impact-label">ROI Potential</div><div class="impact-value ${sys.roiPotential === 'High' ? 'good' : 'blue'}">${sys.roiPotential}</div><div class="summary-sub">Value Uplift</div></div></div>
+      `;
+    }
+
+    function renderAgentControls() {
+      const wrap = document.getElementById('agentControls');
+      wrap.innerHTML = state.agentOrder.map(key => {
+        const a = state.agents[key];
+        return `<div class="agent-row"><div class="agent-icon" style="background:${a.color};">${a.icon}</div><div class="agent-name">${a.name}</div><input type="number" data-agent-number="${key}" min="0.50" max="1.00" step="0.01" value="${a.d.toFixed(2)}" /><input type="range" data-agent-range="${key}" min="50" max="100" step="1" value="${Math.round(a.d * 100)}" /></div>`;
+      }).join('');
+      wrap.querySelectorAll('[data-agent-number]').forEach(el => {
+        el.addEventListener('input', e => {
+          const key = e.target.getAttribute('data-agent-number');
+          const val = clamp(parseFloat(e.target.value || 0), 0.5, 1.0);
+          state.agents[key].d = val;
+          const slider = wrap.querySelector(`[data-agent-range="${key}"]`);
+          if (slider) slider.value = String(Math.round(val * 100));
+          renderAll();
+        });
+      });
+      wrap.querySelectorAll('[data-agent-range]').forEach(el => {
+        el.addEventListener('input', e => {
+          const key = e.target.getAttribute('data-agent-range');
+          const val = parseFloat(e.target.value) / 100;
+          state.agents[key].d = val;
+          const input = wrap.querySelector(`[data-agent-number="${key}"]`);
+          if (input) input.value = val.toFixed(2);
+          renderAll();
+        });
+      });
+    }
+
+    function syncControls() {
+      document.getElementById('simulationMode').value = state.simulationMode;
+      document.getElementById('simulationRuns').value = String(state.simulationRuns);
+      document.getElementById('simulationRunsValue').value = String(state.simulationRuns);
+      document.getElementById('noisePreset').value = state.noisePreset;
+      document.getElementById('loopToggle').classList.toggle('on', state.loopEnabled);
+      document.getElementById('brandReportTitle').value = state.branding.reportTitle;
+      document.getElementById('brandClientName').value = state.branding.clientName;
+      document.getElementById('brandConsultantName').value = state.branding.consultantName;
+      document.getElementById('brandPrimaryColor').value = state.branding.primaryColor;
+      document.getElementById('brandSecondaryColor').value = state.branding.secondaryColor;
+      renderAgentControls();
+    }
+
+    function optimizeArchitecture() {
+      const sys = computeSystem();
+      const weakest = sys.weakest.key;
+      state.agents[weakest].d = clamp(state.agents[weakest].d + 0.04, 0.5, 1.0);
+      if (sys.loopRisk !== 'Low') state.loopEnabled = false;
+      syncControls();
+      renderAll();
+      alert(`Architecture optimized. ${sys.weakest.name} was strengthened, and loop routing was ${state.loopEnabled ? 'retained' : 'reduced'} for stability.`);
+    }
+
+    function loadScenariosStore() {
+      try { return JSON.parse(localStorage.getItem('coherent_agents_scenarios') || '{}'); } catch { return {}; }
+    }
+    function saveScenariosStore(store) { localStorage.setItem('coherent_agents_scenarios', JSON.stringify(store)); }
+    function scenarioSnapshot() { return clone(state); }
+
+    function renderScenarioList() {
+      const store = loadScenariosStore();
+      const wrap = document.getElementById('scenarioList');
+      const keys = Object.keys(store);
+      if (!keys.length) { wrap.innerHTML = '<div class="hint">No saved scenarios yet.</div>'; return; }
+      wrap.innerHTML = keys.map(name => `<div class="scenario-item"><div><div style="font-weight:700;">${name}</div><div class="hint">Saved architecture snapshot</div></div><div class="mini-actions"><button class="secondary-btn" style="width:auto;margin:0;" data-load-scenario="${name}">Load</button><button class="secondary-btn" style="width:auto;margin:0;" data-compare-a="${name}">Set A</button><button class="secondary-btn" style="width:auto;margin:0;" data-compare-b="${name}">Set B</button><button class="secondary-btn" style="width:auto;margin:0;" data-delete-scenario="${name}">Delete</button></div></div>`).join('');
+      wrap.querySelectorAll('[data-load-scenario]').forEach(btn => btn.onclick = () => {
+        const name = btn.getAttribute('data-load-scenario');
+        const snap = store[name];
+        state = clone(snap);
+        syncControls();
+        renderAll();
+        closeDrawer('scenarioDrawer');
+      });
+      wrap.querySelectorAll('[data-compare-a]').forEach(btn => btn.onclick = () => { const name = btn.getAttribute('data-compare-a'); compareA = { name, state: clone(store[name]) }; alert(`Compare A set to ${compareA.name}`); });
+      wrap.querySelectorAll('[data-compare-b]').forEach(btn => btn.onclick = () => { const name = btn.getAttribute('data-compare-b'); compareB = { name, state: clone(store[name]) }; alert(`Compare B set to ${compareB.name}`); });
+      wrap.querySelectorAll('[data-delete-scenario]').forEach(btn => btn.onclick = () => { const name = btn.getAttribute('data-delete-scenario'); delete store[name]; saveScenariosStore(store); renderScenarioList(); });
+    }
+
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'coherent_agents_scenario.json';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    function importJson(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          state = clone(JSON.parse(reader.result));
+          syncControls();
+          renderAll();
+          alert('Scenario JSON imported.');
+        } catch (e) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function openHtmlReport(reportHtml) {
+      const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, '_blank');
+      if (!win) { alert('Popup blocked. Please allow popups for this site.'); return; }
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+    }
+
+    function buildReportHtml(sys, narrative, recommendations) {
+      const scoreSvg = document.getElementById('scoreTrajectoryChart').outerHTML;
+      const integritySvg = document.getElementById('integrityChart').outerHTML;
+      const agentSvg = document.getElementById('agentBarChart').outerHTML;
+      const logo = state.branding.logoDataUrl ? `<img src="${state.branding.logoDataUrl}" style="max-width:180px;max-height:70px;display:block;margin-bottom:18px;" />` : '';
+      const primary = state.branding.primaryColor || '#0f3d63';
+      const secondary = state.branding.secondaryColor || '#5b7ea0';
+      const today = new Date().toLocaleDateString();
+      const narrativeParagraphs = narrative.split('<br><br>').map(p => `<p>${p}</p>`).join('');
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>${escapeHtml(state.branding.reportTitle)}</title>
+<style>
+  :root { --accent:${primary}; --accent2:${secondary}; --ink:#0f172a; --muted:#475569; --line:#dbe4ee; }
+  body { margin:0; font-family:Inter, Arial, sans-serif; color:var(--ink); background:white; }
+  .page { padding:48px 56px; page-break-after:always; }
+  .page:last-child { page-break-after:auto; }
+  .eyebrow { text-transform:uppercase; letter-spacing:0.18em; font-size:11px; color:var(--accent2); font-weight:700; }
+  h1 { font-size:38px; line-height:1.05; letter-spacing:-0.03em; margin:10px 0 14px; max-width:700px; }
+  h2 { font-size:24px; line-height:1.15; letter-spacing:-0.02em; margin:0 0 18px; padding-top:4px; border-top:3px solid var(--accent); }
+  h3 { font-size:15px; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent2); margin:0 0 10px; }
+  p { font-size:14px; line-height:1.7; color:var(--ink); margin:0 0 14px; }
+  .muted { color:var(--muted); }
+  .score-hero { display:grid; grid-template-columns:220px 1fr; gap:24px; margin:28px 0; align-items:center; }
+  .score-box { border:1px solid var(--line); padding:24px; background:#f8fbff; }
+  .score { font-size:54px; line-height:1; font-weight:750; letter-spacing:-0.04em; }
+  .label { margin-top:8px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+  .meta { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+  .meta-card, .card { border:1px solid var(--line); padding:16px 18px; background:white; }
+  .meta-k { font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); }
+  .meta-v { margin-top:8px; font-size:26px; font-weight:700; letter-spacing:-0.03em; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .chart { border:1px solid var(--line); padding:12px; background:#fff; }
+  .chart svg { width:100%; height:auto; display:block; }
+  .insight-list { margin:0; padding-left:18px; }
+  .insight-list li { margin-bottom:10px; font-size:14px; line-height:1.6; }
+  .divider { height:1px; background:var(--line); margin:24px 0; }
+  .summary-banner { border-left:4px solid var(--accent); background:#f8fbff; padding:16px 18px; margin:18px 0 26px; }
+  .footer-note { font-size:11px; color:var(--muted); margin-top:18px; }
+  .print-btn { position:fixed; top:16px; right:16px; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px 14px; font-weight:700; cursor:pointer; }
+  @media print { .page { padding:18mm 16mm; } .print-btn { display:none; } @page { size:A4 portrait; margin:12mm; } }
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">Export PDF</button>
+<section class="page">
+${logo}
+<div class="eyebrow">${escapeHtml(state.branding.reportTitle)}</div>
+<h1>${escapeHtml(state.branding.clientName)}, Multi-Agent System Review, Structural Stability, and Performance Opportunity</h1>
+<p class="muted">Prepared for ${escapeHtml(state.branding.clientName)} on ${escapeHtml(today)}.</p>
+<p class="muted">${escapeHtml(state.branding.consultantName)}</p>
+<div class="score-hero"><div class="score-box"><div class="score">${sys.active.score.toFixed(3)}</div><div class="label">Architecture score</div></div><div><p>This report evaluates the current multi-agent architecture against structural, dynamic, and simulated performance criteria. It translates the current system configuration into an executive view of architecture quality, operating risk, and practical next actions.</p><div class="summary-banner"><strong>Headline finding:</strong> ${escapeHtml(recommendations[0] || 'Review current architecture configuration.')}</div></div></div>
+<div class="footer-note">Simulation-based output. ROI and risk translations are modeled estimates, not validated production benchmarks. ${escapeHtml(state.branding.consultantName)}</div>
+</section>
+<section class="page"><h2>Executive summary</h2><div class="meta"><div class="meta-card"><div class="meta-k">Loop risk</div><div class="meta-v">${escapeHtml(sys.loopRisk)}</div></div><div class="meta-card"><div class="meta-k">Stability uplift</div><div class="meta-v">${pct(sys.improvementPct)}</div></div><div class="meta-card"><div class="meta-k">Error shift</div><div class="meta-v">-${Math.abs(sys.errorReductionPct).toFixed(1)}%</div></div></div><div class="divider"></div><div class="card">${narrativeParagraphs}</div></section>
+<section class="page"><h2>System behavior under simulation</h2><div class="grid-2"><div class="chart"><h3>Score trajectory</h3>${scoreSvg}</div><div class="chart"><h3>Integrity trajectory</h3>${integritySvg}</div></div></section>
+<section class="page"><h2>Agent contribution profile</h2><div class="chart"><h3>Agent score breakdown</h3>${agentSvg}</div><div class="divider"></div><p>Agent contribution is driven primarily by each node’s current reliability proxy and its position in the architecture. Weak nodes should be improved before additional complexity is introduced, particularly where they sit in throughput-heavy or verification-heavy positions.</p></section>
+<section class="page"><h2>Recommendations</h2><div class="card"><h3>Priority actions</h3><ul class="insight-list">${recommendations.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul></div><div class="divider"></div><div class="grid-2"><div class="card"><h3>Commercial translation</h3><p><strong>Expected improvement:</strong> ${pct(sys.improvementPct)}</p><p><strong>Expected error shift:</strong> -${Math.abs(sys.errorReductionPct).toFixed(1)}%</p><p><strong>Deployment readiness:</strong> ${escapeHtml(sys.roiPotential)}</p></div><div class="card"><h3>System economics</h3><p><strong>Cost per run:</strong> $${sys.costPerRun.toFixed(4)}</p><p><strong>Latency:</strong> ${sys.latency.toLocaleString()} ms</p><p><strong>Bottleneck:</strong> ${escapeHtml(sys.bottleneck)}</p></div></div></section>
+</body></html>`;
+    }
+
+    function exportPdfReport() {
+      const sys = computeSystem();
+      const narrative = computeNarrative(sys);
+      const recommendations = computeRecommendations(sys);
+      const report = buildReportHtml(sys, narrative, recommendations);
+      openHtmlReport(report);
+    }
+
+    function saveBranding() {
+      state.branding.reportTitle = document.getElementById('brandReportTitle').value || DEFAULT_STATE.branding.reportTitle;
+      state.branding.clientName = document.getElementById('brandClientName').value || DEFAULT_STATE.branding.clientName;
+      state.branding.consultantName = document.getElementById('brandConsultantName').value || DEFAULT_STATE.branding.consultantName;
+      state.branding.primaryColor = document.getElementById('brandPrimaryColor').value || DEFAULT_STATE.branding.primaryColor;
+      state.branding.secondaryColor = document.getElementById('brandSecondaryColor').value || DEFAULT_STATE.branding.secondaryColor;
+      document.documentElement.style.setProperty('--navy', state.branding.primaryColor);
+      document.documentElement.style.setProperty('--navy-2', state.branding.primaryColor);
+      document.documentElement.style.setProperty('--blue', state.branding.secondaryColor);
+      alert('Branding saved for reports and dashboard accents.');
+      closeDrawer('brandingDrawer');
+    }
+
+    function bindEvents() {
+      document.getElementById('simulationRuns').addEventListener('input', e => {
+        state.simulationRuns = parseInt(e.target.value, 10);
+        document.getElementById('simulationRunsValue').value = String(state.simulationRuns);
+        renderAll();
+      });
+      document.getElementById('simulationRunsValue').addEventListener('input', e => {
+        state.simulationRuns = clamp(parseInt(e.target.value || '250', 10), 50, 500);
+        document.getElementById('simulationRuns').value = String(state.simulationRuns);
+        renderAll();
+      });
+      document.getElementById('noisePreset').addEventListener('change', e => {
+        state.noisePreset = e.target.value;
+        state.sigma = currentNoiseSigma();
+        renderAll();
+      });
+      document.getElementById('loopToggle').addEventListener('click', () => {
+        state.loopEnabled = !state.loopEnabled;
+        syncControls();
+        renderAll();
+      });
+      document.getElementById('optimizeBtn').addEventListener('click', optimizeArchitecture);
+      document.getElementById('regenNarrativeBtn').addEventListener('click', () => {
+        state.narrativeVariant += 1;
+        renderAll();
+      });
+      document.getElementById('viewRecommendationsBtn').addEventListener('click', () => {
+        const list = computeRecommendations(computeSystem()).map((r, i) => `${i + 1}. ${r}`).join('\n');
+        alert(list);
+      });
+      document.getElementById('brandingBtn').addEventListener('click', () => openDrawer('brandingDrawer'));
+      document.getElementById('scenariosBtn').addEventListener('click', () => { renderScenarioList(); openDrawer('scenarioDrawer'); });
+      document.querySelectorAll('[data-close-drawer]').forEach(btn => btn.addEventListener('click', () => closeDrawer(btn.getAttribute('data-close-drawer'))));
+      document.getElementById('saveBrandingBtn').addEventListener('click', saveBranding);
+      document.getElementById('brandLogoInput').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => { state.branding.logoDataUrl = reader.result; };
+        reader.readAsDataURL(file);
+      });
+      document.getElementById('scenarioSaveBtn').addEventListener('click', () => {
+        const name = document.getElementById('scenarioNameInput').value.trim();
+        if (!name) { alert('Please enter a scenario name.'); return; }
+        const store = loadScenariosStore();
+        store[name] = scenarioSnapshot();
+        saveScenariosStore(store);
+        renderScenarioList();
+        document.getElementById('scenarioNameInput').value = '';
+      });
+      document.getElementById('newBtn').addEventListener('click', () => {
+        state = clone(DEFAULT_STATE);
+        syncControls();
+        renderAll();
+      });
+      document.getElementById('saveBtn').addEventListener('click', () => { renderScenarioList(); openDrawer('scenarioDrawer'); });
+      document.getElementById('loadBtn').addEventListener('click', () => { renderScenarioList(); openDrawer('scenarioDrawer'); });
+      document.getElementById('exportJsonBtn').addEventListener('click', exportJson);
+      document.getElementById('exportPdfBtn').addEventListener('click', exportPdfReport);
+      document.getElementById('importJsonInput').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) importJson(file);
+        e.target.value = '';
+      });
+      document.getElementById('loadBtn').addEventListener('dblclick', () => document.getElementById('importJsonInput').click());
+      document.getElementById('simulationMode').addEventListener('change', e => {
+        state.simulationMode = e.target.value;
+      });
+    }
+
+    function renderAll() {
+      const sys = computeSystem();
+      const series = buildSeries();
+      renderSummary(sys, series);
+      renderCharts(sys, series);
+      renderRiskAssessment(computeRiskItems(sys));
+      document.getElementById('executiveSummary').innerHTML = computeNarrative(sys);
+      renderRecommendations(computeRecommendations(sys));
+      renderImpact(sys);
+    }
+
+    syncControls();
+    bindEvents();
+    renderAll();
+  </script>
 </body>
 </html>
