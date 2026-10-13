@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coherent Agents, Functional Simulator</title>
+  <title>Coherent Agents, Eight-Role Architecture Simulator</title>
   <style>
     :root {
       --navy: #081f4d;
@@ -169,10 +169,10 @@
         <div class="side-body">
           <div class="control-group">
             <div class="control-label"><span>Simulation Mode</span><span>ⓘ</span></div>
-            <select id="simulationMode"><option value="monte_carlo">Monte Carlo</option></select>
+            <select id="simulationMode"><option value="monte_carlo">Illustrative seeded trajectories</option></select>
           </div>
           <div class="control-group">
-            <div class="control-label"><span>Simulation Runs</span><span>ⓘ</span></div>
+            <div class="control-label"><span>Scenario seed parameter</span><span>ⓘ</span></div>
             <div class="slider-row">
               <input id="simulationRunsValue" type="number" value="250">
               <input id="simulationRuns" type="range" value="250" min="50" max="500">
@@ -204,8 +204,8 @@
     <main class="content">
       <header class="topbar">
         <div>
-          <h1>AI Architecture Coherence Simulator</h1>
-          <p>Measure. Optimize. Scale with Coherence.</p>
+          <h1>Eight-Role Architecture Coherence Simulator</h1>
+          <p>Explore modeled reliability and feedback across eight configurable roles.</p>
         </div>
         <div class="actions">
           <span id="newBtn" class="action-link">◔ New</span>
@@ -225,6 +225,7 @@
       </nav>
 
       <div class="main">
+        <div class="card" style="margin-bottom:18px;font-size:13px;line-height:1.5;"><strong>Illustrative architecture model.</strong> Eight roles are simulated, no autonomous AI agents or model calls run here. Scores, risk, error reduction, cost, latency and ROI are assumption-based outputs, not measured production results. <a href="https://github.com/CoherenceEngine/Seven-Agent-Live-Simulator-Ui#readme">Scope and limitations</a>. Simulator rights are reserved, commercial reuse requires separate permission. The Coherence Engine™ core IP is excluded from these terms.</div>
         <section class="tab-panel active" id="panel-simulator">
           <div class="section-title">ARCHITECTURE SUMMARY</div>
           <section id="summaryGrid" class="summary-grid"></section>
@@ -235,7 +236,7 @@
           </section>
           <section class="row-3">
             <div class="card"><h3>RISK ASSESSMENT ⓘ</h3><div id="riskAssessment"></div></div>
-            <div class="card"><h3><span style="display:inline-block; background:#7d40e7; color:#fff; padding:3px 7px; border-radius:6px; margin-right:8px;">AI</span>AI-GENERATED EXECUTIVE SUMMARY ⓘ</h3><div id="executiveSummary" class="exec-summary"></div><span id="regenNarrativeBtn" class="regen-btn">⚡ Regenerate Narrative</span></div>
+            <div class="card"><h3><span style="display:inline-block; background:#7d40e7; color:#fff; padding:3px 7px; border-radius:6px; margin-right:8px;">AI</span>TEMPLATE-GENERATED SCENARIO SUMMARY ⓘ</h3><div id="executiveSummary" class="exec-summary"></div><span id="regenNarrativeBtn" class="regen-btn">⚡ Regenerate Narrative</span></div>
             <div class="card"><h3>TOP RECOMMENDATIONS ⓘ</h3><div id="recommendations"></div><span id="viewRecommendationsBtn" class="view-btn">↗ View Full Recommendations</span></div>
           </section>
           <section class="card"><h3>BUSINESS IMPACT &amp; ROI TRANSLATION ⓘ</h3><div id="impactGrid" class="impact-grid"></div></section>
@@ -726,7 +727,7 @@
         '<section class="page"><h2>Executive summary</h2><div class="meta"><div class="meta-card"><div class="meta-k">Loop risk</div><div class="meta-v">' + escapeHtml(sys.loopRisk) + '</div></div><div class="meta-card"><div class="meta-k">Stability uplift</div><div class="meta-v">' + pct(sys.improvementPct) + '</div></div><div class="meta-card"><div class="meta-k">Error shift</div><div class="meta-v">-' + Math.abs(sys.errorReductionPct).toFixed(1) + '%</div></div></div><div class="divider"></div><div class="card">' + narrativeParts + '</div></section>' +
         '<section class="page"><h2>System behavior under simulation</h2><div class="grid-2"><div class="chart"><h3>Score trajectory</h3>' + scoreSvg + '</div><div class="chart"><h3>Integrity trajectory</h3>' + integritySvg + '</div></div></section>' +
         '<section class="page"><h2>Agent contribution profile</h2><div class="chart"><h3>Agent score breakdown</h3>' + agentSvg + '</div><div class="divider"></div><p>Agent contribution is driven primarily by each node’s current reliability proxy and its position in the architecture. Weak nodes should be improved before additional complexity is introduced, particularly where they sit in throughput-heavy or verification-heavy positions.</p></section>' +
-        '<section class="page"><h2>Recommendations</h2><div class="card"><h3>Priority actions</h3><ul class="insight-list">' + recommendations.map(function(r) { return '<li>' + escapeHtml(r) + '</li>'; }).join('') + '</ul></div><div class="divider"></div><div class="grid-2"><div class="card"><h3>Commercial translation</h3><p><strong>Expected improvement:</strong> ' + pct(sys.improvementPct) + '</p><p><strong>Expected error shift:</strong> -' + Math.abs(sys.errorReductionPct).toFixed(1) + '%</p><p><strong>Deployment readiness:</strong> ' + escapeHtml(sys.roiPotential) + '</p></div><div class="card"><h3>System economics</h3><p><strong>Cost per run:</strong> $' + sys.costPerRun.toFixed(4) + '</p><p><strong>Latency:</strong> ' + sys.latency.toLocaleString() + ' ms</p><p><strong>Bottleneck:</strong> ' + escapeHtml(sys.bottleneck) + '</p></div></div></section>' +
+        '<section class="page"><h2>Recommendations</h2><div class="card"><h3>Priority actions</h3><ul class="insight-list">' + recommendations.map(function(r) { return '<li>' + escapeHtml(r) + '</li>'; }).join('') + '</ul></div><div class="divider"></div><div class="grid-2"><div class="card"><h3>Commercial translation</h3><p><strong>Expected improvement:</strong> ' + pct(sys.improvementPct) + '</p><p><strong>Expected error shift:</strong> -' + Math.abs(sys.errorReductionPct).toFixed(1) + '%</p><p><strong>Modeled ROI category:</strong> ' + escapeHtml(sys.roiPotential) + '</p></div><div class="card"><h3>System economics</h3><p><strong>Cost per run:</strong> $' + sys.costPerRun.toFixed(4) + '</p><p><strong>Latency:</strong> ' + sys.latency.toLocaleString() + ' ms</p><p><strong>Bottleneck:</strong> ' + escapeHtml(sys.bottleneck) + '</p></div></div></section>' +
         '</body></html>';
     }
 
