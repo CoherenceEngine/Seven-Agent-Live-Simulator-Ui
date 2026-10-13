@@ -1,0 +1,33 @@
+PROPRIETARY RIGHTS NOTICE
+Eight-Role Architecture Coherence Simulator
+
+Copyright (c) 2026 Allison Hensgen. All rights reserved to the extent
+copyright or other rights are held by the rights holder.
+
+This notice applies only to the simulator source and documentation in
+CoherenceEngine/Seven-Agent-Live-Simulator-Ui. It is not an open-source
+license and does not grant permission for commercial reuse, redistribution,
+modification or derivative products. Such permissions require a separate
+written agreement from the rights holder, except where permitted by
+applicable law or rights already granted under GitHub's Terms of Service.
+Ordinary viewing and interaction with the publicly hosted demonstration
+are permitted.
+
+This notice does not revoke any valid prior permissions. Third-party
+materials, if any, remain governed by their respective terms.
+
+EXCLUDED IP
+No license to The Coherence Engine(TM) core implementation, proprietary
+operators, private research assets, patents or patent applications, or
+trademarks is granted by this notice. These simulator terms do not modify
+the license or permissions of any other repository. No patent license is
+granted.
+
+DISCLAIMER
+The simulator and its documentation are provided "AS IS", without
+warranties of any kind, to the extent permitted by applicable law.
+Outputs are illustrative, assumption-based estimates and do not constitute
+validated production performance, financial returns or deployment advice.
+
+Requests for commercial or other reuse permissions should be directed to
+the CoherenceEngine repository owner through GitHub.
